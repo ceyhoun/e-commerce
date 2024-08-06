@@ -90,9 +90,6 @@
                                     @endforeach
                                     @endforeach
 
-
-
-
                                     <div class="form-check">
                                         <input type="checkbox" name="productcheck" class="form-check-input" id="productcheckid">
                                         <label class="form-check-label" for="productcheckid">Məhsulun Statusu</label>

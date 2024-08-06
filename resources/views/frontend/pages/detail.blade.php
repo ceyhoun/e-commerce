@@ -7,10 +7,15 @@
     <!-- Shop Detail Start -->
     <div class="container-fluid pb-5">
         @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{session('error')}}
+            </div>
+        @endif
         <div class="row px-xl-5">
             @if ($singleProduct && $singleProduct->count() > 0)
                 <div class="col-lg-5 mb-30">
@@ -58,7 +63,8 @@
                                         <input class="form-check-input" type="radio" id="size-{{ $size->id }}"
                                             name="size_id" value="{{ $size->id }}"
                                             @if ($loop->first) checked @endif>
-                                        <label class="form-check-label" for="size-{{ $size->id }}">{{ $size->name }}</label>
+                                        <label class="form-check-label"
+                                            for="size-{{ $size->id }}">{{ $size->name }}</label>
                                     </div>
                                 @endforeach
                             </div>
@@ -68,28 +74,34 @@
                                     <div class="form-radio form-radio-inline">
                                         <input class="form-radio-input" type="radio" id="color-{{ $color->id }}"
                                             name="color_id" value="{{ $color->id }}"
-                                            @if ($loop->first) checked @endif>
-                                        <label class="form-radio-label" for="color-{{ $color->id }}">{{ $color->name }}</label>
+                                            @if ($loop->first) checked @endif  @if ($singleProduct->productstock == 0) disabled @endif>
+                                        <label class="form-radio-label"
+                                            for="color-{{ $color->id }}">{{ $color->name }}</label>
                                     </div>
                                 @endforeach
                             </div>
+                            <p>Stokda : {{$singleProduct->productstock}}</p>
                             <div class="d-flex align-items-center mb-4 pt-2">
+                                @php
+                                $min =($singleProduct->productstock < 1) ? 'disabled' : '';
+                                @endphp
                                 <div class="input-group quantity mr-3" style="width: 130px;">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-primary btn-minus" id="qtyBtnMinus" type="button">
+                                        <button class="btn btn-primary btn-minus" id="qtyBtnMinus" type="button" {{$min}}>
                                             <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="number" id="qtyInput" name="product_qty" min="1"
-                                        max="{{ $singleProduct->qty }}" class="form-control bg-secondary border-0 text-center"
-                                        value="1">
+
+                                    <input type="number" id="qtyInput" name="cartqty" min="1"
+                                        max="{{ $singleProduct->productstock }}"
+                                        class="form-control bg-secondary border-0 text-center" value="1" {{$min}}>
                                     <div class="input-group-btn">
-                                        <button class="btn btn-primary btn-plus" id="qtyBtnPlus" type="button">
+                                        <button class="btn btn-primary btn-plus" id="qtyBtnPlus" type="button" {{$min}} >
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary px-3" type="submit"><i class="fa fa-shopping-cart mr-1"></i>
+                                <button class="btn btn-primary px-3" type="submit" @if($singleProduct->productstock == 0) ?? disabled @endif><i class="fa fa-shopping-cart mr-1"></i>
                                     Səbətə Əlavə Et</button>
                             </div>
                         </form>
@@ -244,48 +256,50 @@
     <!-- Shop Detail End -->
     <!-- Products Start -->
     @if (!empty($likeProducts) && $likeProducts->count() > 0)
-    <div class="container-fluid py-5">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Oxşar Məhsullar</span></h2>
-                <div class="row px-xl-5">
-                    <div class="col">
-                        <div class="owl-carousel related-carousel">
+        <div class="container-fluid py-5">
+            <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Oxşar
+                    Məhsullar</span></h2>
+            <div class="row px-xl-5">
+                <div class="col">
+                    <div class="owl-carousel related-carousel">
                         @foreach ($likeProducts as $item)
-                        <div class="product-item bg-light">
-                            <div class="product-img position-relative overflow-hidden">
-                                <img class="img-fluid w-100" src="{{ url("$item->images") }}" alt="">
-                                <div class="product-action">
-                                    <a class="btn btn-outline-dark btn-square" href=""><i
-                                            class="fa fa-shopping-cart"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i
-                                            class="far fa-heart"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i
-                                            class="fa fa-sync-alt"></i></a>
-                                    <a class="btn btn-outline-dark btn-square" href=""><i
-                                            class="fa fa-search"></i></a>
+                            <div class="product-item bg-light">
+                                <div class="product-img position-relative overflow-hidden">
+                                    <img class="img-fluid w-100" src="{{ url("$item->images") }}" alt="">
+                                    <div class="product-action">
+                                        <a class="btn btn-outline-dark btn-square" href=""><i
+                                                class="fa fa-shopping-cart"></i></a>
+                                        <a class="btn btn-outline-dark btn-square" href=""><i
+                                                class="far fa-heart"></i></a>
+                                        <a class="btn btn-outline-dark btn-square" href=""><i
+                                                class="fa fa-sync-alt"></i></a>
+                                        <a class="btn btn-outline-dark btn-square" href=""><i
+                                                class="fa fa-search"></i></a>
+                                    </div>
+                                </div>
+                                <div class="text-center py-4">
+                                    <a class="h6 text-decoration-none text-truncate"
+                                        href="{{ route('detail', $item->slug) }}">{{ $item->name }}</a>
+                                    <div class="d-flex align-items-center justify-content-center mt-2">
+                                        <h5>{{ $item->price }}</h5>
+                                        <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-center mb-1">
+                                        <small class="fa fa-star text-primary mr-1"></small>
+                                        <small class="fa fa-star text-primary mr-1"></small>
+                                        <small class="fa fa-star text-primary mr-1"></small>
+                                        <small class="fa fa-star text-primary mr-1"></small>
+                                        <small class="fa fa-star text-primary mr-1"></small>
+                                        <small>(99)</small>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="text-center py-4">
-                                <a class="h6 text-decoration-none text-truncate" href="{{route('detail',$item->slug)}}">{{ $item->name }}</a>
-                                <div class="d-flex align-items-center justify-content-center mt-2">
-                                    <h5>{{ $item->price }}</h5>
-                                    <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                                </div>
-                                <div class="d-flex align-items-center justify-content-center mb-1">
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small class="fa fa-star text-primary mr-1"></small>
-                                    <small>(99)</small>
-                                </div>
-                            </div>
-                        </div>
                         @endforeach
                     </div>
                 </div>
             </div>
-    </div>
-    <!-- Products End -->
+        </div>
+        <!-- Products End -->
     @endif
 
 @endsection

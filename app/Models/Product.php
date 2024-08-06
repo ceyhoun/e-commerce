@@ -20,7 +20,6 @@ class Product extends Model
         'name',
         'slug',
         'price',
-        'qty',
         'description',
         'images',
         'status',
@@ -50,6 +49,7 @@ class Product extends Model
         return $this->belongsToMany(Size::class,'product_size_color', 'product_id', 'size_id')->withPivot('qty');
     }
 
+
     public function colors()
     {
         return $this->belongsToMany(Color::class,'product_size_color', 'product_id', 'color_id')->withPivot('qty');
@@ -57,6 +57,6 @@ class Product extends Model
 
     public function shopping()
     {
-        return $this->hasMany(Shopping::class);
+        return $this->belongsTo(Shopping::class);
     }
 }

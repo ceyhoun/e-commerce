@@ -1,37 +1,8 @@
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row bg-secondary py-1 px-xl-5">
-            <div class="col-lg-6 d-none d-lg-block">
-                <div class="d-inline-flex align-items-center h-100">
-                    <a class="text-body mr-3" href="">About</a>
-                    <a class="text-body mr-3" href="">Contact</a>
-                    <a class="text-body mr-3" href="">Help</a>
-                    <a class="text-body mr-3" href="">FAQs</a>
-                </div>
-            </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    @if (Auth::check())
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                                data-toggle="dropdown">#</button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <button class="dropdown-item text-decoration-none" type="button"><a
-                                        href="{{ route('userlogout') }}">Çıxış Et</a></button>
-                            </div>
-                        </div>
-                    @else
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                                data-toggle="dropdown">My
-                                Account</button>
-                            <div class="dropdown-menu dropdown-menu-right">
-                                <button class="dropdown-item text-decoration-none" type="button"><a
-                                        href="{{ route('login') }}">Daxil OL</a></button>
-                            </div>
-                        </div>
-                    @endif
-
                     <div class="btn-group mx-2">
                         <button type="button" class="btn btn-sm btn-light dropdown-toggle"
                             data-toggle="dropdown">USD</button>
@@ -159,16 +130,31 @@
                                 <span class="badge text-secondary border border-secondary rounded-circle"
                                     style="padding-bottom: 2px;">0</span>
                             </a>
-                            <a href="" class="btn px-0 ml-3">
+                            <a href="{{route('cart')}}" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle"
-                                    style="padding-bottom: 2px;">0</span>
+                                    style="padding-bottom: 2px;">
+                                {{$shops}}
+                                </span>
                             </a>
+
                             @if (Auth::check())
                                 <a href="" class="btn px-0 ml-3">
                                     <i class="fa-solid fa-user text-primary"></i>
                                     {{ Auth::user()->name }}
                                 </a>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm dropdown-toggle"
+                                        data-toggle="dropdown"><i class="fa-solid fa-caret-down"></i></button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <button class="dropdown-item text-decoration-none" type="button"><a
+                                                href="{{ route('userlogout') }}">Çıxış Et</a></button>
+                                    </div>
+                                </div>
+                            @else
+                            <a href="{{route('login')}}" class="px-0 ml-3">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                            </a>
                             @endif
                         </div>
                     </div>

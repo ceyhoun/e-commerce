@@ -11,22 +11,28 @@ Route::get('/', function () {
 });
 Route::group(['prefix'=>'admin'],function () {
 
+
+
         Route::get('login', [PanelCotrollers::class, 'adminlogin'])->name('adminlogin');
         Route::post('auth', [PanelCotrollers::class, 'adminloginauth'])->name('adminloginauth');
 
+        Route::group(['middleware'=> 'check'],function () {
+
+        // Admin panel-backend
+        Route::get('index', [PanelCotrollers::class, 'panel'])->name('panel');
+        Route::get('forms/category', [PanelCotrollers::class, 'category'])->name('category');
+        Route::get('forms/category/subcategory', [PanelCotrollers::class, 'subcategory'])->name('subcategory');
+        Route::post('forms/category/add/subcategory', [PanelCotrollers::class, 'addsubcategory'])->name('addsubcategory');
+        Route::post('forms/addcategory', [PanelCotrollers::class, 'addcategory'])->name('addcategory');
+        Route::get('forms/products', [PanelCotrollers::class, 'products'])->name('products');
+        Route::post('forms/addproducts', [PanelCotrollers::class, 'addproducts'])->name('addproducts');
+        //tables
+        Route::get('/tables', [PanelCotrollers::class, 'tables'])->name('tables');
+        Route::get('/admlogout', [PanelCotrollers::class, 'admlogout'])->name('admlogout');
+});
 
 
-    // Admin panel-backend
-    Route::get('index', [PanelCotrollers::class, 'panel'])->name('panel');
-    Route::get('forms/category', [PanelCotrollers::class, 'category'])->name('category');
-    Route::get('forms/category/subcategory', [PanelCotrollers::class, 'subcategory'])->name('subcategory');
-    Route::post('forms/category/add/subcategory', [PanelCotrollers::class, 'addsubcategory'])->name('addsubcategory');
-    Route::post('forms/addcategory', [PanelCotrollers::class, 'addcategory'])->name('addcategory');
-    Route::get('forms/products', [PanelCotrollers::class, 'products'])->name('products');
-    Route::post('forms/addproducts', [PanelCotrollers::class, 'addproducts'])->name('addproducts');
-    //tables
-    Route::get('/tables', [PanelCotrollers::class, 'tables'])->name('tables');
-    Route::get('/admlogout', [PanelCotrollers::class, 'admlogout'])->name('admlogout');
+
 });
 //Pages-frontend
 
@@ -57,10 +63,10 @@ Route::get('admin/chars', [PanelCotrollers::class, 'chars'])->name('chars');
 
 Route::post('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->name('additem');
 
+//cartdelete
 
 
-
-
+Route::delete('/cart/item/{id}/{product_id}', [CartControllers::class, 'itemDelete'])->name('itemDelete');
 
 
 

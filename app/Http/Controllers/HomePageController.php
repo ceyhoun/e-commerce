@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
+use App\Models\Shopping;
 use App\Models\Size;
 use App\Models\Subcategory;
 use App\Models\User;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use PhpParser\Node\Stmt\Return_;
@@ -20,7 +22,15 @@ class HomePageController extends Controller
 
     public function register()
     {
-        return view('frontend.auth.register');
+        $categories = Category::all();
+
+        $data['categories'] = $categories;
+
+        $shops = Shopping::sum('product_qty');
+
+
+        $data['shops'] = $shops;
+        return view('frontend.auth.register', $data);
     }
 
     public function createuser(Request $request)
@@ -29,10 +39,13 @@ class HomePageController extends Controller
         $email = $request->input('email');
         $password = Hash::make($request->input('password'));
 
+
         $user = User::create([
             'name' => $name,
             'email' => $email,
             'password' => $password,
+            'ip_address' => $request->ip(),
+
         ]);
 
         if ($user) {
@@ -46,12 +59,22 @@ class HomePageController extends Controller
 
     public function login()
     {
-        return view('frontend.auth.login');
+        $categories = Category::all();
+
+        $data['categories'] = $categories;
+
+        $shops = Shopping::sum('product_qty');
+
+
+        $data['shops'] = $shops;
+
+        return view('frontend.auth.login', $data);
     }
 
     public function createlogin(Request $request)
     {
         $user = Auth::attempt(['email' => $request->email, 'password' => $request->password]);
+
 
         if ($user) {
             return redirect()->route('home');
@@ -63,7 +86,7 @@ class HomePageController extends Controller
     public function userlogout()
     {
         Auth::logout();
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 
     public function index(Request $request)
@@ -78,10 +101,28 @@ class HomePageController extends Controller
 
 
 
-        $products = Product::where('status', '1')
-            ->with('sizes')
-            ->with('colors')
+
+
+        $products = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as total_qty'))
+            ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
+            ->where('products.status', '1')
+            ->groupBy('products.id')
+            ->with([
+                'sizes' => function ($query) {
+                    $query->select('sizes.name');
+                }
+            ])
+            ->with([
+                'colors' => function ($query) {
+                    $query->select('colors.name');
+                }
+            ])
             ->get();
+
+
+
+        $shops = Shopping::sum('product_qty');
+        $data['shops'] = $shops;
         $data['products'] = $products;
         $data['categories'] = $categories;
         $productsDesc = Product::whereStatus('1')->orderBy('created_at', 'asc')->limit(5)->get();
@@ -100,15 +141,19 @@ class HomePageController extends Controller
         if (!$slug) {
             return redirect()->back();
         }
-        $singleProduct = Product::where('status', 1)->where('slug', $slug)
-            ->with('sizes')
-            ->with('colors')
-            ->with('subcategory')
-            ->first();
+
+         $singleProduct=Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as productstock'))
+        ->join('product_size_color','products.id','=','product_size_color.product_id')
+        ->groupBy('products.id')
+        ->first();
         if (!$singleProduct) {
             return redirect()->back();
         }
 
+        $shops = Shopping::sum('product_qty');
+
+
+        $data['shops'] = $shops;
 
         $data['singleProduct'] = $singleProduct;
 
@@ -133,6 +178,10 @@ class HomePageController extends Controller
     public function shop(Request $request)
     {
 
+        $shops = Shopping::sum('product_qty');
+
+
+        $data['shops'] = $shops;
         $categories = Category::all();
         $subcategories = Subcategory::withCount('products')->get();
 
@@ -166,25 +215,27 @@ class HomePageController extends Controller
                 });
             }
 
-        }
+            if ($request->ajax()) {
 
+                if ($request->has('size')) {
+                    $size = $request->size ?? null;
 
-        if ($request->ajax()) {
+                    $productQuery->whereHas('sizes', function ($query) use ($size) {
+                        if (!empty($size)) {
+                            $query->where('name', $size);
+                        }
+                    });
+                }
 
-            if ($request->has('size')) {
-                $size = $request->size ?? null;
+                $filteredProducts = $productQuery->get();
 
-                $productQuery->whereHas('sizes', function ($query) use ($size) {
-                    $query->where('name', $size);
-                });
+                return response()->json([
+                    'products' => $filteredProducts,
+                ]);
             }
-
-            $filteredProducts = $productQuery->get();
-
-            return response()->json([
-                'products' => $filteredProducts,
-            ]);
         }
+
+
 
 
         $products = $productQuery->get();
@@ -195,6 +246,9 @@ class HomePageController extends Controller
 
     public function contact()
     {
+        $shops = Shopping::sum('product_qty');
+
+        $data['shops'] = $shops;
         $categories = Category::whereStatus('1')->get();
         $data['categories'] = $categories;
 
@@ -209,10 +263,40 @@ class HomePageController extends Controller
         return view('frontend.pages.checkout', $data);
     }
 
-    public function cart()
+    public function cart(Request $request)
+    //sepetin içi
     {
+
         $categories = Category::whereStatus('1')->get();
+        $user_id = Auth::id();
+        $session_id = $request->session()->get('_token');
+
+        $userorders = Shopping::where(function ($q) use ($user_id, $session_id) {
+            if ($user_id) {
+                $q->where('user_id', $user_id);
+            } else {
+                $q->where('session_id', $session_id);
+            }
+        })
+            ->with([
+                'products' => function ($q) {
+                    $q->select('id', 'name', 'price', 'images');
+
+                }
+            ])
+            ->with('sizes')
+            ->with('colors')
+            ->get();
+
+
+
+        $shops = Shopping::sum('product_qty');
+
+
+        $data['shops'] = $shops;
+
         $data['categories'] = $categories;
+        $data['userorders'] = $userorders;
 
         return view('frontend.pages.cart', $data);
     }

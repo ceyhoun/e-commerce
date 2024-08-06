@@ -109,7 +109,6 @@ class PanelCotrollers extends Controller
         $subcategory = $request->subcategoryid;
         $slug = Str::slug($name);
         $price = $request->productprice;
-        $qty = $request->qty;
         $desctription = $request->productdesc;
 
         //img
@@ -140,7 +139,6 @@ class PanelCotrollers extends Controller
             'subcategory_id' => $subcategory,
             'slug' => $slug,
             'price' => $price,
-            'qty' => $qty,
             'description' => $desctription,
             'images' => $image,
             'status' => $check,

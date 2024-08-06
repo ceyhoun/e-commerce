@@ -25,6 +25,16 @@ class Shopping extends Model
 
     public function products()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class,'product_id');
+    }
+
+    public function colors()
+    {
+        return $this->belongsTo(Color::class,'color_id');
+    }
+
+    public function sizes()
+    {
+        return $this->belongsTo(Size::class,'size_id');
     }
 }

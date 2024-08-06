@@ -17,15 +17,17 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('slug')->nullable();
             $table->double('price')->default(0)->nullable();
-            $table->bigInteger('qty')->default(1)->nullable();
             $table->text('description')->nullable();
             $table->string('images')->default('newlogo.jpeg')->nullable();
-            $table->unsignedBigInteger('size_id')->nullable();
-            $table->unsignedBigInteger('color_id')->nullable();
             $table->boolean('status')->default(false)->nullable();
             $table->timestamps();
+
         });
+
+
     }
+
+
 
     /**
      * Reverse the migrations.

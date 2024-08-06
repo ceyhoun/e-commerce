@@ -144,8 +144,10 @@
                     <div class="product-img position-relative overflow-hidden">
                             <img class="img-fluid w-100" src="{{url("$product->images")}}" alt="{{$product->name}}">
                             <div class="product-action">
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-shopping-cart"></i></a>
+
+                                    <button type="submit" class="btn btn-outline-dark btn-square">
+                                        <i class="fa fa-shopping-cart"></i> <!-- İcon ve Buton -->
+                                    </button>
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="far fa-heart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i

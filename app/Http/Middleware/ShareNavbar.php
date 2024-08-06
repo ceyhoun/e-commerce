@@ -3,11 +3,11 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class Yeni
+class ShareNavbar
 {
     /**
      * Handle an incoming request.
@@ -16,12 +16,14 @@ class Yeni
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role == 'admin') {
-            return redirect()->route('panel');
-        }
+
+        $navbarItems = [
+            'Home' => route('home'),
+            'About' => route('about'),
+            'Contact' => route('contact'),
+        ];
+
+        view()->share('navbarItems', $navbarItems);
         return $next($request);
-
-
-        //abort(404);
     }
 }
