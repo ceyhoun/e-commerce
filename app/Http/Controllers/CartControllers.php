@@ -22,7 +22,7 @@ class CartControllers extends Controller
         $cartqty = $request->input('cartqty');
 
         //mehsulu tap ve stok idaresi et
-        $product =Product::where('status',1)->find($product_id);
+        $product = Product::where('status', 1)->find($product_id);
 
         if (!$product) {
             return redirect()->back()->with('eroor', 'Məhsul Tapılmadı');
@@ -30,18 +30,18 @@ class CartControllers extends Controller
 
         //stoku idare et
 
-         $stockControl=DB::table('product_size_color')
-        ->where('product_id',$product_id)
-        ->where('size_id',$size_id)
-        ->where('color_id',$color_id)
-        ->first();
+        $stockControl = DB::table('product_size_color')
+            ->where('product_id', $product_id)
+            ->where('size_id', $size_id)
+            ->where('color_id', $color_id)
+            ->first();
 
         if (!$stockControl) {
-            return redirect()->back()->with('error','Stock information has been selected for this calendar');
+            return redirect()->back()->with('error', 'Stock information has been selected for this calendar');
         }
 
         if ($stockControl->qty < $cartqty) {
-            return redirect()->back()->with('error','Stock not defined');
+            return redirect()->back()->with('error', 'Stock not defined');
         }
 
         $cart = Shopping::where(function ($query) use ($user_id, $session_id) {
@@ -70,11 +70,12 @@ class CartControllers extends Controller
             ]);
         }
 
+        //stoku güncelle
         DB::table('product_size_color')
-        ->where('product_id',$product_id)
-        ->where('size_id',$size_id)
-        ->where('color_id',$color_id)
-        ->decrement('qty',$cartqty);
+            ->where('product_id', $product_id)
+            ->where('size_id', $size_id)
+            ->where('color_id', $color_id)
+            ->decrement('qty', $cartqty);
 
         return redirect()->back()->with('success', 'Uğurla Elave Olundu!...');
     }
@@ -86,20 +87,28 @@ class CartControllers extends Controller
 
         if ($order) {
             // İlgili ürünü bul
-            $product = Product::where('status', 1)->find($product_id);
+
+            $backqty = $order->product_qty;
+
+            $product = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as total_qty'))
+                ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
+                ->where('products.id', $product_id)
+                ->groupBy('products.id')
+                ->where('status', 1)->find($product_id);
 
             if ($product) {
-                // Ürünün stok miktarını güncelle
-                $product->save();
 
-                // Siparişi sil
+
+                DB::table('product_size_color')
+                    ->where('product_id', $product_id)
+                    ->update(['qty' => DB::raw('qty + ' . $backqty)]);
+
                 $order->delete();
 
                 return redirect()->back()->with('success', 'Ürün sepetten silindi ve stok güncellendi.');
             }
         }
 
-        // Hata durumunda geri dön
         return redirect()->back()->with('error', 'Sipariş silinirken veya ürün güncellenirken bir hata oluştu.');
     }
 

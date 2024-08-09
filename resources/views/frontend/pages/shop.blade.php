@@ -92,41 +92,26 @@
                         size</span></h5>
                 <div class="bg-light p-4 mb-30">
                     <form id="filterForm">
+                        @if (! empty($sizes) && $sizes->count() > 0)
+
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input" checked id="size-all" name="size-all">
                             <label class="custom-control-label" for="size-all">All Size</label>
-                            <span class="badge border font-weight-normal">1000</span>
+                            <span class="badge border font-weight-normal"></span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-1" name="size[]"
-                                value="XS">
-                            <label class="custom-control-label" for="size-1">XS</label>
-                            <span class="badge border font-weight-normal">150</span>
+
+                        @foreach ($sizes as $size)
+                        <div
+                            class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                            <input type="checkbox" class="custom-control-input" id="size-{{$size->id}}" name="size[]"
+                                value="{{$size->name}}">
+                            <label class="custom-control-label" for="size-{{$size->id}}">{{$size->name}}</label>
+                            <span class="badge border font-weight-normal">{{$size->totalSize}}</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-2" name="size[]"
-                                value="S">
-                            <label class="custom-control-label" for="size-2">S</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-3" name="size[]"
-                                value="M">
-                            <label class="custom-control-label" for="size-3">M</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-4" name="size[]"
-                                value="L">
-                            <label class="custom-control-label" for="size-4">L</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="size-5" name="size[]"
-                                value="XL">
-                            <label class="custom-control-label" for="size-5">XL</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
+                        @endforeach
+                        @endif
+
+
                     </form>
                 </div>
                 <!-- Size End -->
@@ -167,7 +152,8 @@
                                         @foreach ($subcategories as $subcategory)
                                             <a class="dropdown-item"
                                                 href="{{ route('shop', ['filtre' => $subcategory->slug]) }}">{{ $subcategory->name }}
-                                                ({{ $subcategory->products_count }})</a>
+                                                ({{ $subcategory->products_count }})
+                                            </a>
                                         @endforeach
                                     </div>
                                 </div>
@@ -176,39 +162,39 @@
                     </div>
                     <div class="col-12 ">
                         <div class="row product-list">
-                            @if (! empty($products) && $products->count() > 0)
-                            @foreach ($products as $product)
-                            <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
-                                <div class="product-item bg-light mb-4">
-                                    <div class="product-img position-relative overflow-hidden">
-                                        <img class="img-fluid w-100" src="{{ url("$product->images") }}"
-                                            alt="">
-                                        <div class="product-action">
-                                            <a class="btn btn-outline-dark btn-square" href=""><i
-                                                    class="fa fa-shopping-cart"></i></a>
-                                            <a class="btn btn-outline-dark btn-square" href=""><i
-                                                    class="far fa-heart"></i></a>
-                                            <a class="btn btn-outline-dark btn-square" href=""><i
-                                                    class="fa fa-sync-alt"></i></a>
-                                            <a class="btn btn-outline-dark btn-square" href=""><i
-                                                    class="fa fa-search"></i></a>
+                            @if (!empty($products) && $products->count() > 0)
+                                @foreach ($products as $product)
+                                    <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                                        <div class="product-item bg-light mb-4">
+                                            <div class="product-img position-relative overflow-hidden">
+                                                <img class="img-fluid w-100" src="{{ url("$product->images") }}"
+                                                    alt="">
+                                                <div class="product-action">
+                                                    <a class="btn btn-outline-dark btn-square" href=""><i
+                                                            class="fa fa-shopping-cart"></i></a>
+                                                    <a class="btn btn-outline-dark btn-square" href=""><i
+                                                            class="far fa-heart"></i></a>
+                                                    <a class="btn btn-outline-dark btn-square" href=""><i
+                                                            class="fa fa-sync-alt"></i></a>
+                                                    <a class="btn btn-outline-dark btn-square" href=""><i
+                                                            class="fa fa-search"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="text-center py-4">
+                                                <a class="h6 text-decoration-none text-truncate"
+                                                    href="{{ route('detail', $product->slug) }}">{{ $product->name }}</a>
+                                                <div class="d-flex align-items-center justify-content-center mt-2">
+                                                    <h5>{{ $product->price }} AZN(MANAT)</h5>
+                                                    <h6 class="text-muted ml-2"><del>$6</del></h6>
+                                                </div>
+                                                <div class="d-flex align-items-center justify-content-center mb-1">
+                                                    <small class="fa fa-star mr-1"></small>
+                                                    <small>90</small>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="text-center py-4">
-                                        <a class="h6 text-decoration-none text-truncate"
-                                            href="{{ route('detail', $product->slug) }}">{{ $product->name }}</a>
-                                        <div class="d-flex align-items-center justify-content-center mt-2">
-                                            <h5>{{ $product->price }} AZN(MANAT)</h5>
-                                            <h6 class="text-muted ml-2"><del>$6</del></h6>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-center mb-1">
-                                            <small class="fa fa-star mr-1"></small>
-                                            <small>90</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                                @endforeach
                             @endif
 
                         </div>
@@ -238,7 +224,7 @@
 
 
 
-    @section('content')
+@section('content')
     @push('scripts')
         <script>
             $(document).ready(function() {

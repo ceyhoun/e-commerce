@@ -5,63 +5,66 @@
     <div class="container-fluid">
         <div class="row px-xl-5">
             <div class="col-lg-8 table-responsive mb-5">
-                <table class="table table-light table-borderless table-hover text-center mb-0">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Məhsullar</th>
-                            <th>Qiymət</th>
-                            <th>Say</th>
-                            <th>Qiymet</th>
-                            <th>Sil</th>
-                        </tr>
-                    </thead>
-                    <tbody class="align-middle">
-                        @foreach ($userorders as $order)
+                @if (isset($userorders) && $userorders->count() > 0)
+                    <table class="table table-light table-borderless table-hover text-center mb-0">
+                        <thead class="thead-dark">
                             <tr>
-                                <td class="align-middle">
-                                    @php
-                                        $images = json_decode($order->products->images, true);
-                                    @endphp
-                                    @if (is_array($images))
-                                        @foreach ($images as $image)
-                                            <img src="{{ $image }}" alt=" image">
-                                        @endforeach
-                                    @endif
-                                    {{ $order->products->name }}
-                                </td>
-                                <td class="align-middle">{{ $order->products->price }}</td>
-                                <td class="align-middle">
-                                    <div class="input-group quantity mx-auto" style="width: 100px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="number"
-                                            class="form-control form-control-sm bg-secondary border-0 text-center"
-                                            min="1" max="{{ $order->products->qty }}"
-                                            value="{{ $order->product_qty }}">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="align-middle">{{ $order->product_qty * $order->products->price }}</td>
-                                <td>
-                                <form id="delete-form-{{ $order->id }}" method="post" action="{{ route('itemDelete', ['id' => $order->id, 'product_id' => $order->product_id]) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Silinsin mi?')">
-                                        <i class="fa fa-times"></i>
-                                    </button>
-                                </form>
-                            </td>
+                                <th>Məhsullar</th>
+                                <th>Qiymət</th>
+                                <th>Say</th>
+                                <th>Qiymet</th>
+                                <th>Sil</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="align-middle">
+                            @foreach ($userorders as $order)
+                                <tr>
+                                    <td class="align-middle">
+                                        @php
+                                            $images = json_decode($order->products->images, true);
+                                        @endphp
+                                        @if (is_array($images))
+                                            @foreach ($images as $image)
+                                                <img src="{{ $image }}" alt=" image">
+                                            @endforeach
+                                        @endif
+                                        {{ $order->products->name }}
+                                    </td>
+                                    <td class="align-middle">{{ $order->products->price }}</td>
+                                    <td class="align-middle">
+                                        <div class="input-group quantity mx-auto" style="width: 100px;">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-minus">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
+                                            <input type="number"
+                                                class="form-control form-control-sm bg-secondary border-0 text-center"
+                                                min="1" max="{{ $order->products->qty }}"
+                                                value="{{ $order->product_qty }}">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-sm btn-primary btn-plus">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">{{ $order->product_qty * $order->products->price }}</td>
+                                    <td>
+                                        <form id="delete-form-{{ $order->id }}" method="post"
+                                            action="{{ route('itemDelete', ['id' => $order->id, 'product_id' => $order->product_id]) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger" id="deleteBtn">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
             </div>
             <div class="col-lg-4">
                 <form class="mb-30" action="">
@@ -94,6 +97,9 @@
                     </div>
                 </div>
             </div>
+        @else
+            <p>No items added to the cart</p>
+            @endif
         </div>
     </div>
     <!-- Cart End -->
@@ -122,6 +128,10 @@
                     });
                 });
             });
+
+
+
+
         </script>
     @endpush
 @endsection

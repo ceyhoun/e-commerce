@@ -83,9 +83,17 @@ class HomePageController extends Controller
         }
     }
 
-    public function userlogout()
+    public function userlogout(Request $request)
     {
         Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        Shopping::where('session_id', $request->session()->getId())
+            ->whereNull('user_id') // Sadece oturum ID'sine sahip öğeleri temizle
+            ->delete();
+
         return redirect()->route('home');
     }
 
@@ -119,9 +127,19 @@ class HomePageController extends Controller
             ])
             ->get();
 
+        $user_id = Auth::id();
+        $session_id = $request->session()->get('_token');
 
 
-        $shops = Shopping::sum('product_qty');
+        $shops = Shopping::where(function ($q) use ($user_id, $session_id) {
+            if ($user_id) {
+                // Kullanıcı ID'sine göre filtrele
+                $q->where('user_id', $user_id);
+            } else {
+                // Oturum ID'sine göre filtrele
+                $q->where('session_id', $session_id);
+            }
+        })->sum('product_qty');
         $data['shops'] = $shops;
         $data['products'] = $products;
         $data['categories'] = $categories;
@@ -142,10 +160,10 @@ class HomePageController extends Controller
             return redirect()->back();
         }
 
-         $singleProduct=Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as productstock'))
-        ->join('product_size_color','products.id','=','product_size_color.product_id')
-        ->groupBy('products.id')
-        ->first();
+        $singleProduct = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as productstock'))
+            ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
+            ->groupBy('products.id')
+            ->first();
         if (!$singleProduct) {
             return redirect()->back();
         }
@@ -184,7 +202,16 @@ class HomePageController extends Controller
         $data['shops'] = $shops;
         $categories = Category::all();
         $subcategories = Subcategory::withCount('products')->get();
+         $sizes = Size::select('sizes.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as totalSize'))
+            ->join('product_size_color', 'sizes.id', '=', 'product_size_color.size_id')
+            ->groupBy('sizes.id')
+            ->get();
 
+
+
+
+
+        $data['sizes'] = $sizes;
         $data['categories'] = $categories;
         $data['subcategories'] = $subcategories;
 
@@ -290,7 +317,15 @@ class HomePageController extends Controller
 
 
 
-        $shops = Shopping::sum('product_qty');
+        $shops = Shopping::where(function ($q) use ($user_id, $session_id) {
+            if ($user_id) {
+                // Kullanıcı ID'sine göre filtrele
+                $q->where('user_id', $user_id);
+            } else {
+                // Oturum ID'sine göre filtrele
+                $q->where('session_id', $session_id);
+            }
+        })->sum('product_qty');
 
 
         $data['shops'] = $shops;
