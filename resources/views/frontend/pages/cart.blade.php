@@ -132,6 +132,50 @@
 
 
 
+            $(document).ready(function() {
+                $('#deleteBtn').click(function(e) {
+                    e.preventDefault();
+
+                    let form = $(this).closest('form');
+                    let urlForm = form.attr('action');
+                    console.log(urlForm);
+
+                    Swal.fire({
+                        title: 'Silmek istediğinizden emin misiniz?',
+                        text: "Bu işlemi geri alamazsınız!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Evet, sil',
+                        cancelButtonText: 'Hayır, iptal et'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: "POST",
+                                url: urlForm,
+                                data: form.serialize(),
+                                dataType: "json",
+                                success: function(response,this) {
+                                    if (response.success) {
+                                        Swal.fire(
+                                            'Silindi!',
+                                            'Ürün başarıyla silindi.',
+                                            'success'
+                                        );
+
+
+                                    } else {
+                                        Swal.fire(
+                                            'Silinmedi!',
+                                            'Xeta.',
+                                            'error'
+                                        );
+                                    }
+                                }
+                            });
+                        }
+                    })
+                })
+            });
         </script>
     @endpush
 @endsection
