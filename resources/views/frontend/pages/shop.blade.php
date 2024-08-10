@@ -52,37 +52,23 @@
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by
                         color</span></h5>
                 <div class="bg-light p-4 mb-30">
-                    <form>
+                    <form id="filterColor">
+                        @if (! empty($colors) && $colors->count() > 0)
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="color-all">
-                            <label class="custom-control-label" for="price-all">All Color</label>
+                            <input type="checkbox" class="custom-control-input" checked id="color-all" name="color-all">
+                            <label class="custom-control-label" for="color-all">All Color</label>
                             <span class="badge border font-weight-normal">1000</span>
                         </div>
+                        @foreach ($colors as $color)
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-1">
-                            <label class="custom-control-label" for="color-1">Black</label>
+                            <input type="checkbox" class="custom-control-input" id="color-{{$color->id}}" name="color[]" value="{{$color->name}}">
+                            <label class="custom-control-label" for="color-{{$color->id}}">{{$color->name}}</label>
                             <span class="badge border font-weight-normal">150</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-2">
-                            <label class="custom-control-label" for="color-2">White</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-3">
-                            <label class="custom-control-label" for="color-3">Red</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-4">
-                            <label class="custom-control-label" for="color-4">Blue</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="color-5">
-                            <label class="custom-control-label" for="color-5">Green</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
+                        @endforeach
+
+                        @endif
+
                     </form>
                 </div>
                 <!-- Color End -->
@@ -97,7 +83,7 @@
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                             <input type="checkbox" class="custom-control-input" checked id="size-all" name="size-all">
                             <label class="custom-control-label" for="size-all">All Size</label>
-                            <span class="badge border font-weight-normal"></span>
+                            <span class="badge border font-weight-normal">{{$allTotalSize}}</span>
                         </div>
 
                         @foreach ($sizes as $size)
@@ -117,7 +103,6 @@
                 <!-- Size End -->
             </div>
             <!-- Shop Sidebar End -->
-
 
             <!-- Shop Product Start -->
             <div class="col-lg-9 col-md-8">
@@ -170,7 +155,7 @@
                                                 <img class="img-fluid w-100" src="{{ url("$product->images") }}"
                                                     alt="">
                                                 <div class="product-action">
-                                                    <a class="btn btn-outline-dark btn-square" href=""><i
+                                                    <a class="btn btn-outline-dark btn-square" href="{{route('additemget',$product->id)}}"><i
                                                             class="fa fa-shopping-cart"></i></a>
                                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                                             class="far fa-heart"></i></a>
@@ -231,20 +216,40 @@
 
 
                 $('#filterForm input').change(function() {
-                    applyFilters();
+                    applyFilterSize();
                 });
 
-                function showlist(response) {
-
-                    const products = response.products;
-                    let productList = document.querySelector('.product-list');
-                    productList.innerHTML = '';
-
-                    products.forEach((item) => {
-                        console.log(item.name);
 
 
-                        const productContent = `
+                function applyFilterSize() {
+                    var formSize = $('#filterForm').serialize();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('shop') }}",
+                        data: formSize,
+                        success: function(response) {
+                            //console.log(response.products);
+                            showSizelist(response);
+                        },
+                        error: function(xhr) {
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+
+
+                function showSizelist(response) {
+
+                    const productSize = response.products;
+                    let productSizeList = document.querySelector('.product-list');
+                    productSizeList.innerHTML = '';
+
+                    productSize.forEach((item) => {
+                        //console.log(item.name);
+
+
+                        const productSizeContent = `
                             <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                                 <div class="product-item bg-light mb-4">
                                     <div class="product-img position-relative overflow-hidden">
@@ -270,28 +275,68 @@
                                 </div>
                             </div>
                             `;
-                        productList.insertAdjacentHTML('beforeend', productContent);
+                        productSizeList.insertAdjacentHTML('beforeend', productSizeContent);
                     });
                 }
 
+                ///////////////////////
 
-                function applyFilters() {
-                    var formData = $('#filterForm').serialize();
+                $('#filterColor input').change(function () {
+                   applyFilterColors();
+                });
+
+                function applyFilterColors() {
+                    let formColor =$('#filterColor').serialize();
 
                     $.ajax({
                         type: "GET",
-                        url: "{{ route('shop') }}",
-                        data: formData,
-                        success: function(response) {
-                            //console.log(response.products);
-                            showlist(response);
+                        url: "{{route('shop')}}",
+                        data: formColor,
+                        dataType: "json",
+                        success: function (response) {
+                            showColorList(response);
                         },
-                        error: function(xhr) {
+                        error: function(xhr){
                             console.log(xhr.responseText);
                         }
                     });
                 }
 
+                function showColorList(response) {
+                    const productColor =response.products;
+                    let productColorList = document.querySelector('.product-list');
+                    productColorList.innerHTML = '';
+
+                    productColor.forEach((color) => {
+                        const productColorContent = `
+                        <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                                <div class="product-item bg-light mb-4">
+                                    <div class="product-img position-relative overflow-hidden">
+                                        <img class="img-fluid w-100" src="${color.images}" alt="">
+                                        <div class="product-action">
+                                            <a class="btn btn-outline-dark btn-square" href=color"#"><i class="fa fa-shopping-cart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center py-4">
+                                        <a class="h6 text-decoration-none text-truncate" href="/detail/${color.slug}">${color.name}</a>
+                                        <div class="d-flex align-items-center justify-content-center mt-2">
+                                            <h5>$${color.price}</h5>
+                                            <h6 class="text-muted ml-2"><del>$9</del></h6>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center mb-1">
+                                            <small class="fa fa-star text-primary mr-1"></small>
+                                            <small>(90)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        productColorList.insertAdjacentHTML('beforeend',productColorContent);
+                    })
+                }
             });
         </script>
     @endpush

@@ -202,16 +202,16 @@ class HomePageController extends Controller
         $data['shops'] = $shops;
         $categories = Category::all();
         $subcategories = Subcategory::withCount('products')->get();
-         $sizes = Size::select('sizes.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as totalSize'))
+        $sizes = Size::select('sizes.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as totalSize'))
             ->join('product_size_color', 'sizes.id', '=', 'product_size_color.size_id')
             ->groupBy('sizes.id')
             ->get();
+        $colors =Color::all();
 
-
-
-
-
+        $allTotalSize =$sizes->sum('totalSize');
         $data['sizes'] = $sizes;
+        $data['colors'] = $colors;
+        $data['allTotalSize'] = $allTotalSize;
         $data['categories'] = $categories;
         $data['subcategories'] = $subcategories;
 
@@ -250,6 +250,16 @@ class HomePageController extends Controller
                     $productQuery->whereHas('sizes', function ($query) use ($size) {
                         if (!empty($size)) {
                             $query->where('name', $size);
+                        }
+                    });
+                }
+
+                if ($request->has('color')) {
+                    $color =$request->color ?? null;
+
+                    $productQuery->whereHas('colors', function($q) use ($color){
+                        if (!empty($color)) {
+                            $q->where('name',$color);
                         }
                     });
                 }

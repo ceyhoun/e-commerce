@@ -61,6 +61,7 @@ Route::get('admin/chars', [PanelCotrollers::class, 'chars'])->name('chars');
 
 //cart
 
+Route::get('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->name('additemget');
 Route::post('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->name('additem');
 
 //cartdelete

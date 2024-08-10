@@ -154,7 +154,7 @@
                                 url: urlForm,
                                 data: form.serialize(),
                                 dataType: "json",
-                                success: function(response,this) {
+                                success: function(response) {
                                     if (response.success) {
                                         Swal.fire(
                                             'Silindi!',
