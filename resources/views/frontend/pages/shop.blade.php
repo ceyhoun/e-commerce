@@ -13,38 +13,46 @@
                 <h5 class="section-title position-relative text-uppercase mb-3"><span class="bg-secondary pr-3">Filter by
                         price</span></h5>
                 <div class="bg-light p-4 mb-30">
-                    <form>
+                    <form id="filterPrice">
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="price-all">
+                            <input type="checkbox" class="custom-control-input" checked id="price-all" data-min=""
+                                data-max="">
                             <label class="custom-control-label" for="price-all">All Price</label>
                             <span class="badge border font-weight-normal">1000</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-1">
+                            <input type="checkbox" class="custom-control-input" id="price-1" data-min="0"
+                                data-max="100">
                             <label class="custom-control-label" for="price-1">$0 - $100</label>
                             <span class="badge border font-weight-normal">150</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-2">
+                            <input type="checkbox" class="custom-control-input" id="price-2" data-min="100"
+                                data-max="200">
                             <label class="custom-control-label" for="price-2">$100 - $200</label>
                             <span class="badge border font-weight-normal">295</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-3">
+                            <input type="checkbox" class="custom-control-input" id="price-3" data-min="200"
+                                data-max="300">
                             <label class="custom-control-label" for="price-3">$200 - $300</label>
                             <span class="badge border font-weight-normal">246</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-4">
+                            <input type="checkbox" class="custom-control-input" id="price-4" data-min="300"
+                                data-max="400">
                             <label class="custom-control-label" for="price-4">$300 - $400</label>
                             <span class="badge border font-weight-normal">145</span>
                         </div>
                         <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="price-5">
+                            <input type="checkbox" class="custom-control-input" id="price-5" data-min="400"
+                                data-max="500">
                             <label class="custom-control-label" for="price-5">$400 - $500</label>
                             <span class="badge border font-weight-normal">168</span>
                         </div>
                     </form>
+
+
                 </div>
                 <!-- Price End -->
 
@@ -53,20 +61,23 @@
                         color</span></h5>
                 <div class="bg-light p-4 mb-30">
                     <form id="filterColor">
-                        @if (! empty($colors) && $colors->count() > 0)
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="color-all" name="color-all">
-                            <label class="custom-control-label" for="color-all">All Color</label>
-                            <span class="badge border font-weight-normal">1000</span>
-                        </div>
-                        @foreach ($colors as $color)
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-{{$color->id}}" name="color[]" value="{{$color->name}}">
-                            <label class="custom-control-label" for="color-{{$color->id}}">{{$color->name}}</label>
-                            <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        @endforeach
-
+                        @if (!empty($colors) && $colors->count() > 0)
+                            <div
+                                class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                                <input type="checkbox" class="custom-control-input" checked id="color-all" name="color-all">
+                                <label class="custom-control-label" for="color-all">All Color</label>
+                                <span class="badge border font-weight-normal">1000</span>
+                            </div>
+                            @foreach ($colors as $color)
+                                <div
+                                    class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                                    <input type="checkbox" class="custom-control-input" id="color-{{ $color->id }}"
+                                        name="color[]" value="{{ $color->name }}">
+                                    <label class="custom-control-label"
+                                        for="color-{{ $color->id }}">{{ $color->name }}</label>
+                                    <span class="badge border font-weight-normal">150</span>
+                                </div>
+                            @endforeach
                         @endif
 
                     </form>
@@ -78,23 +89,24 @@
                         size</span></h5>
                 <div class="bg-light p-4 mb-30">
                     <form id="filterForm">
-                        @if (! empty($sizes) && $sizes->count() > 0)
+                        @if (!empty($sizes) && $sizes->count() > 0)
+                            <div
+                                class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                                <input type="checkbox" class="custom-control-input" checked id="size-all" name="size-all">
+                                <label class="custom-control-label" for="size-all">All Size</label>
+                                <span class="badge border font-weight-normal">{{ $allTotalSize }}</span>
+                            </div>
 
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="size-all" name="size-all">
-                            <label class="custom-control-label" for="size-all">All Size</label>
-                            <span class="badge border font-weight-normal">{{$allTotalSize}}</span>
-                        </div>
-
-                        @foreach ($sizes as $size)
-                        <div
-                            class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="size-{{$size->id}}" name="size[]"
-                                value="{{$size->name}}">
-                            <label class="custom-control-label" for="size-{{$size->id}}">{{$size->name}}</label>
-                            <span class="badge border font-weight-normal">{{$size->totalSize}}</span>
-                        </div>
-                        @endforeach
+                            @foreach ($sizes as $size)
+                                <div
+                                    class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+                                    <input type="checkbox" class="custom-control-input" id="size-{{ $size->id }}"
+                                        name="size[]" value="{{ $size->name }}">
+                                    <label class="custom-control-label"
+                                        for="size-{{ $size->id }}">{{ $size->name }}</label>
+                                    <span class="badge border font-weight-normal">{{ $size->totalSize }}</span>
+                                </div>
+                            @endforeach
                         @endif
 
 
@@ -155,7 +167,8 @@
                                                 <img class="img-fluid w-100" src="{{ url("$product->images") }}"
                                                     alt="">
                                                 <div class="product-action">
-                                                    <a class="btn btn-outline-dark btn-square" href="{{route('additemget',$product->id)}}"><i
+                                                    <a class="btn btn-outline-dark btn-square"
+                                                        href="{{ route('additemget', $product->id) }}"><i
                                                             class="fa fa-shopping-cart"></i></a>
                                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                                             class="far fa-heart"></i></a>
@@ -281,29 +294,29 @@
 
                 ///////////////////////
 
-                $('#filterColor input').change(function () {
-                   applyFilterColors();
+                $('#filterColor input').change(function() {
+                    applyFilterColors();
                 });
 
                 function applyFilterColors() {
-                    let formColor =$('#filterColor').serialize();
+                    let formColor = $('#filterColor').serialize();
 
                     $.ajax({
                         type: "GET",
-                        url: "{{route('shop')}}",
+                        url: "{{ route('shop') }}",
                         data: formColor,
                         dataType: "json",
-                        success: function (response) {
+                        success: function(response) {
                             showColorList(response);
                         },
-                        error: function(xhr){
+                        error: function(xhr) {
                             console.log(xhr.responseText);
                         }
                     });
                 }
 
                 function showColorList(response) {
-                    const productColor =response.products;
+                    const productColor = response.products;
                     let productColorList = document.querySelector('.product-list');
                     productColorList.innerHTML = '';
 
@@ -334,9 +347,41 @@
                                 </div>
                             </div>
                         `;
-                        productColorList.insertAdjacentHTML('beforeend',productColorContent);
+                        productColorList.insertAdjacentHTML('beforeend', productColorContent);
                     })
                 }
+                /////price
+                $('#filterPrice input').change(function() {
+                    // Seçilen filtreleri topla
+                    var minprice = null;
+                    var maxprice = null;
+                    $('#filterPrice input[type="checkbox"]:checked').each(function() {
+                        minprice = $(this).data('min');
+                        maxprice = $(this).data('max');
+                    });
+
+                    applyFilterPrice(minprice,maxprice);
+
+                });
+
+                function applyFilterPrice(minprice,maxprice)
+                {
+                    let formPrice=$('#filterPrice').serialize();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{route('shop')}}",
+                        data: formPrice,
+                        dataType: "json",
+                        success: function (response) {
+
+                        },
+                        error: function (xhr) {
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+
             });
         </script>
     @endpush

@@ -29,6 +29,7 @@ Route::group(['prefix'=>'admin'],function () {
         //tables
         Route::get('/tables', [PanelCotrollers::class, 'tables'])->name('tables');
         Route::get('/admlogout', [PanelCotrollers::class, 'admlogout'])->name('admlogout');
+        Route::get('/mailbox',[PanelCotrollers::class,'mailbox'])->name('mailbox');
 });
 
 
@@ -54,6 +55,7 @@ Route::get('/contact', [HomePageController::class, 'contact'])->name('contact');
 Route::get('/checkout', [HomePageController::class, 'checkout'])->name('checkout');
 Route::get('/cart', [HomePageController::class, 'cart'])->name('cart');
 Route::get('/error', [HomePageController::class, 'error'])->name('error');
+Route::post('/sent/messages',[HomePageController::class,'messages'])->name('messages');
 
 
 //chars
@@ -68,7 +70,8 @@ Route::post('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->
 
 
 Route::delete('/cart/item/{id}/{product_id}', [CartControllers::class, 'itemDelete'])->name('itemDelete');
+//sent messages
 
 
 
-
+//

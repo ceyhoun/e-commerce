@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Contact;
 use App\Models\Product;
 use App\Models\Shopping;
 use App\Models\Size;
@@ -264,15 +265,52 @@ class HomePageController extends Controller
                     });
                 }
 
+                if ($request->has('price')) {
+                    $minPrice =$request->minPrice ?? null;
+                    $maxPrice =$request->maxPrice ?? null;
+
+                    $productQuery->whereBetween('price', [$minPrice,$maxPrice]);
+                }
+
+
+                if ($request->has('minprice') && $request->has('maxprice')) {
+                    $minprice = $request->minprice ?? null;
+                    $maxprice = $request->maxprice ?? null;
+
+                    if (is_numeric($minprice) && is_numeric($maxprice)) {
+                        $productQuery->whereBetween('price', [$minprice, $maxprice]);
+                    } elseif (is_numeric($minprice)) {
+                        $productQuery->where('price', '>=', $minprice);
+                    } elseif (is_numeric($maxprice)) {
+                        $productQuery->where('price', '<=', $maxprice);
+                    }
+                }
+
+
+
                 $filteredProducts = $productQuery->get();
 
                 return response()->json([
                     'products' => $filteredProducts,
                 ]);
             }
+
+
         }
 
 
+        if ($request->has('minprice') && $request->has('maxprice')) {
+            $minprice = $request->minprice ?? null;
+            $maxprice = $request->maxprice ?? null;
+
+            if (is_numeric($minprice) && is_numeric($maxprice)) {
+                $productQuery->whereBetween('price', [$minprice, $maxprice]);
+            } elseif (is_numeric($minprice)) {
+                $productQuery->where('price', '>=', $minprice);
+            } elseif (is_numeric($maxprice)) {
+                $productQuery->where('price', '<=', $maxprice);
+            }
+        }
 
 
         $products = $productQuery->get();
@@ -286,11 +324,38 @@ class HomePageController extends Controller
         $shops = Shopping::sum('product_qty');
 
         $data['shops'] = $shops;
-        $categories = Category::whereStatus('1')->get();
+        $categories = Category::whereStatus('1')
+        ->get();
         $data['categories'] = $categories;
 
         return view('frontend.pages.contact', $data);
     }
+    public function messages(Request $request)
+    {
+        // E-posta dahil form verilerini doğrudan al
+        $name = $request->name;
+        $email = $request->email;
+        $subject = $request->subject;
+        $message = $request->message;
+        $status = $request->has('status') ? 1 : 0;
+
+        // Veriyi kaydet
+        $contact = Contact::create([
+            'name' => $name,
+            'email' => $email,
+            'subject' => $subject,
+            'message' => $message,
+            'status' => $status,
+        ]);
+
+        // Başarı ya da hata mesajı
+        if ($contact) {
+            return redirect()->route('contact')->with('success', 'Mesajınız Gönderildi');
+        } else {
+            return redirect()->route('contact')->with('danger', 'Mesajınız Gönderilmedi');
+        }
+    }
+
 
     public function checkout()
     {

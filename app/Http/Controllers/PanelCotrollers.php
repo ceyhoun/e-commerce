@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
+use App\Models\Shopping;
 use App\Models\Size;
 use App\Models\Subcategory;
 use App\Models\TopCategory;
@@ -229,6 +230,21 @@ class PanelCotrollers extends Controller
     public function chars()
     {
         return view('backend.section.charts.chartjs');
+    }
+
+    //message
+
+    public function mailbox()
+    {
+
+        $categories = Category::whereStatus('1')->get();
+        $data['categories'] = $categories;
+
+        $shops = Shopping::sum('product_qty');
+
+        $data['shops'] = $shops;
+
+        return view('backend.section.mailbox.mailbox',$data);
     }
 
 }
