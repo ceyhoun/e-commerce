@@ -186,6 +186,22 @@ class HomePageController extends Controller
             ->get();
 
 
+            $user_id = Auth::id();
+            $session_id = request()->session()->get('_token');
+
+
+            $shops = Shopping::where(function ($q) use ($user_id, $session_id) {
+                if ($user_id) {
+                    // Kullanıcı ID'sine göre filtrele
+                    $q->where('user_id', $user_id);
+                } else {
+                    // Oturum ID'sine göre filtrele
+                    $q->where('session_id', $session_id);
+                }
+            })->sum('product_qty');
+            $data['shops'] = $shops;
+
+
 
 
         $data['likeProducts'] = $likeProducts;
@@ -197,6 +213,8 @@ class HomePageController extends Controller
     public function shop(Request $request)
     {
 
+
+
         $shops = Shopping::sum('product_qty');
 
 
@@ -207,12 +225,22 @@ class HomePageController extends Controller
             ->join('product_size_color', 'sizes.id', '=', 'product_size_color.size_id')
             ->groupBy('sizes.id')
             ->get();
-        $colors =Color::all();
+        $allTotalSize = $sizes->sum('totalSize');
 
-        $allTotalSize =$sizes->sum('totalSize');
+         $colors = Color::select('colors.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as totalColor'))
+            ->join('product_size_color', 'colors.id', '=', 'product_size_color.color_id')
+            ->groupBy('colors.id')
+            ->get();
+        ;
+
+
+
+        $allTotalColor=$colors->sum('totalColor');
+
         $data['sizes'] = $sizes;
         $data['colors'] = $colors;
         $data['allTotalSize'] = $allTotalSize;
+        $data['allTotalColor'] = $allTotalColor;
         $data['categories'] = $categories;
         $data['subcategories'] = $subcategories;
 
@@ -256,20 +284,20 @@ class HomePageController extends Controller
                 }
 
                 if ($request->has('color')) {
-                    $color =$request->color ?? null;
+                    $color = $request->color ?? null;
 
-                    $productQuery->whereHas('colors', function($q) use ($color){
+                    $productQuery->whereHas('colors', function ($q) use ($color) {
                         if (!empty($color)) {
-                            $q->where('name',$color);
+                            $q->where('name', $color);
                         }
                     });
                 }
 
                 if ($request->has('price')) {
-                    $minPrice =$request->minPrice ?? null;
-                    $maxPrice =$request->maxPrice ?? null;
+                    $minPrice = $request->minPrice ?? null;
+                    $maxPrice = $request->maxPrice ?? null;
 
-                    $productQuery->whereBetween('price', [$minPrice,$maxPrice]);
+                    $productQuery->whereBetween('price', [$minPrice, $maxPrice]);
                 }
 
 
@@ -312,6 +340,19 @@ class HomePageController extends Controller
             }
         }
 
+        $user_id=Auth::id();
+        $session_id=$request->session()->get('_token');
+
+        $authControl = Shopping::where(function ($q) use ($user_id, $session_id) {
+            if ($user_id) {
+                // Kullanıcı ID'sine göre filtrele
+                $q->where('user_id', $user_id);
+            } else {
+                // Oturum ID'sine göre filtrele
+                $q->where('session_id', $session_id);
+            }
+        })->sum('product_qty');
+        $data['authControl'] = $authControl;
 
         $products = $productQuery->get();
         $data['products'] = $products;
@@ -325,8 +366,24 @@ class HomePageController extends Controller
 
         $data['shops'] = $shops;
         $categories = Category::whereStatus('1')
-        ->get();
+            ->get();
         $data['categories'] = $categories;
+
+        $user_id=Auth::id();
+        $session_id=request()->session()->get('_token');
+
+        $authControl = Shopping::where(function ($q) use ($user_id, $session_id) {
+            if ($user_id) {
+                // Kullanıcı ID'sine göre filtrele
+                $q->where('user_id', $user_id);
+            } else {
+                // Oturum ID'sine göre filtrele
+                $q->where('session_id', $session_id);
+            }
+        })->sum('product_qty');
+        $data['authControl'] = $authControl;
+
+
 
         return view('frontend.pages.contact', $data);
     }

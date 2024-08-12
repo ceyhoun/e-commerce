@@ -155,14 +155,15 @@
                                 data: form.serialize(),
                                 dataType: "json",
                                 success: function(response) {
-                                    if (response.success) {
-                                        Swal.fire(
+                                    if(response.success) {
+                                        $fire =Swal.fire(
                                             'Silindi!',
                                             'Ürün başarıyla silindi.',
                                             'success'
-                                        );
-
-
+                                        )
+                                        if ($fire) {
+                                            window.location.href='/cart';
+                                        }
                                     } else {
                                         Swal.fire(
                                             'Silinmedi!',

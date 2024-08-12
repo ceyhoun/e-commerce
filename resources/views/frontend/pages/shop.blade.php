@@ -66,7 +66,7 @@
                                 class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                                 <input type="checkbox" class="custom-control-input" checked id="color-all" name="color-all">
                                 <label class="custom-control-label" for="color-all">All Color</label>
-                                <span class="badge border font-weight-normal">1000</span>
+                                <span class="badge border font-weight-normal">{{$allTotalColor}}</span>
                             </div>
                             @foreach ($colors as $color)
                                 <div
@@ -75,7 +75,7 @@
                                         name="color[]" value="{{ $color->name }}">
                                     <label class="custom-control-label"
                                         for="color-{{ $color->id }}">{{ $color->name }}</label>
-                                    <span class="badge border font-weight-normal">150</span>
+                                    <span class="badge border font-weight-normal">{{$color->totalColor}}</span>
                                 </div>
                             @endforeach
                         @endif
@@ -320,23 +320,23 @@
                     let productColorList = document.querySelector('.product-list');
                     productColorList.innerHTML = '';
 
-                    productColor.forEach((color) => {
+                    productColor.forEach((items) => {
                         const productColorContent = `
                         <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
                                 <div class="product-item bg-light mb-4">
                                     <div class="product-img position-relative overflow-hidden">
-                                        <img class="img-fluid w-100" src="${color.images}" alt="">
+                                        <img class="img-fluid w-100" src="${items.images}" alt="">
                                         <div class="product-action">
-                                            <a class="btn btn-outline-dark btn-square" href=color"#"><i class="fa fa-shopping-cart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
                                             <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
                                             <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
                                             <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
                                         </div>
                                     </div>
                                     <div class="text-center py-4">
-                                        <a class="h6 text-decoration-none text-truncate" href="/detail/${color.slug}">${color.name}</a>
+                                        <a class="h6 text-decoration-none text-truncate" href="/detail/${items.slug}">${items.name}</a>
                                         <div class="d-flex align-items-center justify-content-center mt-2">
-                                            <h5>$${color.price}</h5>
+                                            <h5>${items.price}</h5>
                                             <h6 class="text-muted ml-2"><del>$9</del></h6>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center mb-1">
@@ -346,41 +346,12 @@
                                     </div>
                                 </div>
                             </div>
-                        `;
+                            `;
                         productColorList.insertAdjacentHTML('beforeend', productColorContent);
                     })
                 }
                 /////price
-                $('#filterPrice input').change(function() {
-                    // Seçilen filtreleri topla
-                    var minprice = null;
-                    var maxprice = null;
-                    $('#filterPrice input[type="checkbox"]:checked').each(function() {
-                        minprice = $(this).data('min');
-                        maxprice = $(this).data('max');
-                    });
 
-                    applyFilterPrice(minprice,maxprice);
-
-                });
-
-                function applyFilterPrice(minprice,maxprice)
-                {
-                    let formPrice=$('#filterPrice').serialize();
-
-                    $.ajax({
-                        type: "GET",
-                        url: "{{route('shop')}}",
-                        data: formPrice,
-                        dataType: "json",
-                        success: function (response) {
-
-                        },
-                        error: function (xhr) {
-                            console.log(xhr.responseText);
-                        }
-                    });
-                }
 
             });
         </script>
