@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Return_;
 
 class HomePageController extends Controller
@@ -186,20 +187,20 @@ class HomePageController extends Controller
             ->get();
 
 
-            $user_id = Auth::id();
-            $session_id = request()->session()->get('_token');
+        $user_id = Auth::id();
+        $session_id = request()->session()->get('_token');
 
 
-            $shops = Shopping::where(function ($q) use ($user_id, $session_id) {
-                if ($user_id) {
-                    // Kullanıcı ID'sine göre filtrele
-                    $q->where('user_id', $user_id);
-                } else {
-                    // Oturum ID'sine göre filtrele
-                    $q->where('session_id', $session_id);
-                }
-            })->sum('product_qty');
-            $data['shops'] = $shops;
+        $shops = Shopping::where(function ($q) use ($user_id, $session_id) {
+            if ($user_id) {
+                // Kullanıcı ID'sine göre filtrele
+                $q->where('user_id', $user_id);
+            } else {
+                // Oturum ID'sine göre filtrele
+                $q->where('session_id', $session_id);
+            }
+        })->sum('product_qty');
+        $data['shops'] = $shops;
 
 
 
@@ -227,7 +228,7 @@ class HomePageController extends Controller
             ->get();
         $allTotalSize = $sizes->sum('totalSize');
 
-         $colors = Color::select('colors.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as totalColor'))
+        $colors = Color::select('colors.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as totalColor'))
             ->join('product_size_color', 'colors.id', '=', 'product_size_color.color_id')
             ->groupBy('colors.id')
             ->get();
@@ -235,7 +236,7 @@ class HomePageController extends Controller
 
 
 
-        $allTotalColor=$colors->sum('totalColor');
+        $allTotalColor = $colors->sum('totalColor');
 
         $data['sizes'] = $sizes;
         $data['colors'] = $colors;
@@ -340,15 +341,13 @@ class HomePageController extends Controller
             }
         }
 
-        $user_id=Auth::id();
-        $session_id=$request->session()->get('_token');
+        $user_id = Auth::id();
+        $session_id = $request->session()->get('_token');
 
         $authControl = Shopping::where(function ($q) use ($user_id, $session_id) {
             if ($user_id) {
-                // Kullanıcı ID'sine göre filtrele
                 $q->where('user_id', $user_id);
             } else {
-                // Oturum ID'sine göre filtrele
                 $q->where('session_id', $session_id);
             }
         })->sum('product_qty');
@@ -369,15 +368,13 @@ class HomePageController extends Controller
             ->get();
         $data['categories'] = $categories;
 
-        $user_id=Auth::id();
-        $session_id=request()->session()->get('_token');
+        $user_id = Auth::id();
+        $session_id = request()->session()->get('_token');
 
         $authControl = Shopping::where(function ($q) use ($user_id, $session_id) {
             if ($user_id) {
-                // Kullanıcı ID'sine göre filtrele
                 $q->where('user_id', $user_id);
             } else {
-                // Oturum ID'sine göre filtrele
                 $q->where('session_id', $session_id);
             }
         })->sum('product_qty');
@@ -389,12 +386,47 @@ class HomePageController extends Controller
     }
     public function messages(Request $request)
     {
-        // E-posta dahil form verilerini doğrudan al
-        $name = $request->name;
-        $email = $request->email;
-        $subject = $request->subject;
-        $message = $request->message;
+
         $status = $request->has('status') ? 1 : 0;
+
+        $validate = Validator::make(
+            $request->all(),
+            [
+                'name' => 'required|alpha|min:3|max:100',
+                'email' => 'required|email|max:100',
+                'subject' => 'required|alpha|string',
+                'message' => 'required',
+            ],
+            [
+                'name.required' => 'Required field',
+                'name.alpha' => 'Your name cannot be written with numbers',
+                'name.min' => 'Your name must be a minimum of 3 characters',
+                'name.max' => 'Your name must be a maximum of 100 characters',
+
+                //mail
+                'email.required' => 'Required field',
+                'email.email' => 'Wrong email format',
+                'email.max' => 'Your email must be a maximum of 100 characters',
+                //subject
+                'subject.required' => 'Required field',
+                'subject.alpha' => 'Your name cannot be written with numbers',
+                //message
+                'message.required' => 'Required field',
+            ]
+        );
+
+
+
+        if ($validate->fails()) {
+            return redirect()->back()->withErrors($validate)->withInput();
+        }
+
+        $validateData = $validate->validated();
+
+        $name = $validateData['name'];
+        $email = $validateData['email'];
+        $subject = $validateData['subject'];
+        $message = $validateData['message'];
 
         // Veriyi kaydet
         $contact = Contact::create([

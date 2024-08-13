@@ -9,37 +9,49 @@
             <div class="col-lg-7 mb-5">
                 <div class="contact-form bg-light p-30">
                     <div id="success"></div>
+                    @if (session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
 
-                        @if ($errors->has('name'))
-                                <div class="alert alert-danger">{{$errors->first('name')}}</div>
-                        @endif
-
-                        @if (session('success'))
-                            <div class="alert alert-success">{{session('success')}}</div>
-                        @endif
-
-                        @if (session('danger'))
-                        <div class="alert alert-danger">{{session('danger')}}</div>
+                    @if (session('danger'))
+                        <div class="alert alert-danger">{{ session('danger') }}</div>
                     @endif
                     <form method="POST" action="{{ route('messages') }}">
                         @csrf
                         <div class="control-group">
-                            <input type="text" class="form-control" name="name"
+                            <input type="text" class="form-control" name="name" value="{{ old('name') }}"
                                 placeholder="Your Name" />
-                            <p class="help-block text-danger"></p>
+                            <p class="help-block text-danger">
+                                @if ($errors->has('name'))
+                                    {{ $errors->first('name') }}
+                                @endif
+                            </p>
                         </div>
                         <div class="control-group">
-                            <input type="email" class="form-control" name="email" placeholder="Your Email" />
-                            <p class="help-block text-danger"></p>
+                            <input type="text" class="form-control" name="email" placeholder="Your Email"
+                                value="{{ old('email') }}" />
+                            <p class="help-block text-danger">
+                                @if ($errors->has('email'))
+                                    {{ $errors->first('email') }}
+                                @endif
+                            </p>
                         </div>
                         <div class="control-group">
-                            <input type="text" class="form-control" name="subject"
+                            <input type="text" class="form-control" name="subject" value="{{ old('subject') }}"
                                 placeholder="Subject" />
-                            <p class="help-block text-danger"></p>
+                            <p class="help-block text-danger">
+                                @if ($errors->has('subject'))
+                                    {{$errors->first('subject')}}
+                                @endif
+                            </p>
                         </div>
                         <div class="control-group">
-                            <textarea class="form-control" rows="8" name="message" placeholder="Message"></textarea>
-                            <p class="help-block text-danger"></p>
+                            <textarea class="form-control" rows="8" name="message" placeholder="Message">{{ old('message') }}</textarea>
+                            <p class="help-block text-danger">
+                                @if ($errors->has('message'))
+                                    {{$errors->first('message')}}
+                                @endif
+                            </p>
                         </div>
                         <div>
                             <button class="btn btn-primary py-2 px-4" type="submit">Send
