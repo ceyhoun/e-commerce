@@ -57,7 +57,7 @@ class CartControllers extends Controller
             ->first();
 
         if ($cart) {
-
+            $cart->product_qty += $cartqty;
             $cart->save();
         } else {
             Shopping::create([
@@ -70,7 +70,6 @@ class CartControllers extends Controller
             ]);
         }
 
-        //stoku güncelle
         DB::table('product_size_color')
             ->where('product_id', $product_id)
             ->where('size_id', $size_id)
@@ -82,26 +81,25 @@ class CartControllers extends Controller
 
     public function itemDelete($id, $product_id)
     {
-        // Sepetteki ürünü bul
         $order = Shopping::find($id);
 
         if ($order) {
-            // İlgili ürünü bul
-
-            $backqty = $order->product_qty;
-
             $product = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as total_qty'))
                 ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
                 ->where('products.id', $product_id)
                 ->groupBy('products.id')
-                ->where('status', 1)->find($product_id);
+                ->where('status', 1)
+                ->first($product_id);
 
             if ($product) {
 
+                $backqty = $order->product_qty;
 
                 DB::table('product_size_color')
                     ->where('product_id', $product_id)
-                    ->update(['qty' => DB::raw('qty + ' . $backqty)]);
+                    ->where('size_id', $order->size_id) // Burada size_id ve color_id'nin de dahil edilmesi gerektiğini unutmayın
+                    ->where('color_id', $order->color_id)
+                    ->increment('qty',$backqty);
 
                 $order->delete();
 

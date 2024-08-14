@@ -51,11 +51,12 @@
                                     </td>
                                     <td class="align-middle">{{ $order->product_qty * $order->products->price }}</td>
                                     <td>
-                                        <form id="delete-form-{{ $order->id }}" method="post"
+                                        <form id="delete-form-{{ $order->id }}" method="POST"
                                             action="{{ route('itemDelete', ['id' => $order->id, 'product_id' => $order->product_id]) }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" id="deleteBtn">
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm(`Silinsin mi ?`)" id="deleteBtn">
                                                 <i class="fa fa-times"></i>
                                             </button>
                                         </form>
@@ -81,11 +82,11 @@
                     <div class="border-bottom pb-2">
                         <div class="d-flex justify-content-between mb-3">
                             <h6>Subtotal</h6>
-                            <h6></h6>
+                            <h6>{{$order->product_qty * $order->products->price}} AZN</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
+                            <h6 class="font-weight-medium">{{$order->product_qty * $order->products->price * 0.18}}</h6>
                         </div>
                     </div>
                     <div class="pt-2">
@@ -127,55 +128,6 @@
                         }
                     });
                 });
-            });
-
-
-
-
-            $(document).ready(function() {
-                $('#deleteBtn').click(function(e) {
-                    e.preventDefault();
-
-                    let form = $(this).closest('form');
-                    let urlForm = form.attr('action');
-                    console.log(urlForm);
-
-                    Swal.fire({
-                        title: 'Silmek istediğinizden emin misiniz?',
-                        text: "Bu işlemi geri alamazsınız!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Evet, sil',
-                        cancelButtonText: 'Hayır, iptal et'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                type: "POST",
-                                url: urlForm,
-                                data: form.serialize(),
-                                dataType: "json",
-                                success: function(response) {
-                                    if(response.success) {
-                                        $fire =Swal.fire(
-                                            'Silindi!',
-                                            'Ürün başarıyla silindi.',
-                                            'success'
-                                        )
-                                        if ($fire) {
-                                            window.location.href='/cart';
-                                        }
-                                    } else {
-                                        Swal.fire(
-                                            'Silinmedi!',
-                                            'Xeta.',
-                                            'error'
-                                        );
-                                    }
-                                }
-                            });
-                        }
-                    })
-                })
             });
         </script>
     @endpush
