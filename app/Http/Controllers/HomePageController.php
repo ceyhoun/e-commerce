@@ -447,7 +447,6 @@ class HomePageController extends Controller
             ->with([
                 'products' => function ($q) {
                     $q->select('id', 'name', 'price', 'images');
-
                 }
             ])
             ->with('sizes')
