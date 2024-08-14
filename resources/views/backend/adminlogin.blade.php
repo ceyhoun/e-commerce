@@ -18,7 +18,7 @@
                 <div class="col-md-6 my-md-5">
                     <div class="card card-success w-50">
                         <div class="card-header">
-                            <h3 class="card-title">Yeni Kataqoriya Əlavə Et</h3>
+                            <h3 class="card-title">Admin Panele Giriş</h3>
                         </div>
                         <form action="{{route('adminloginauth')}}" method="post">
                             @csrf

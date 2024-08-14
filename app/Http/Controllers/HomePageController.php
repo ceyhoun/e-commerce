@@ -156,7 +156,7 @@ class HomePageController extends Controller
         return view('frontend.pages.index', $data);
     }
 
-    public function detail($slug = null, $id = null)
+    public function detail($slug = null)
     {
         if (!$slug) {
             return redirect()->back();
@@ -165,6 +165,7 @@ class HomePageController extends Controller
         $singleProduct = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as productstock'))
             ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
             ->groupBy('products.id')
+            ->where('slug',$slug)
             ->first();
         if (!$singleProduct) {
             return redirect()->back();
@@ -216,7 +217,7 @@ class HomePageController extends Controller
 
 
 
-        $shops = Shopping::sum('product_qty');
+        $shops = getAuthController();
 
 
         $data['shops'] = $shops;
@@ -341,18 +342,6 @@ class HomePageController extends Controller
             }
         }
 
-        $user_id = Auth::id();
-        $session_id = $request->session()->get('_token');
-
-        $authControl = Shopping::where(function ($q) use ($user_id, $session_id) {
-            if ($user_id) {
-                $q->where('user_id', $user_id);
-            } else {
-                $q->where('session_id', $session_id);
-            }
-        })->sum('product_qty');
-        $data['authControl'] = $authControl;
-
         $products = $productQuery->get();
         $data['products'] = $products;
         return view('frontend.pages.shop', $data);
@@ -361,26 +350,12 @@ class HomePageController extends Controller
 
     public function contact()
     {
-        $shops = Shopping::sum('product_qty');
+        $shops =getAuthController();
 
         $data['shops'] = $shops;
         $categories = Category::whereStatus('1')
             ->get();
         $data['categories'] = $categories;
-
-        $user_id = Auth::id();
-        $session_id = request()->session()->get('_token');
-
-        $authControl = Shopping::where(function ($q) use ($user_id, $session_id) {
-            if ($user_id) {
-                $q->where('user_id', $user_id);
-            } else {
-                $q->where('session_id', $session_id);
-            }
-        })->sum('product_qty');
-        $data['authControl'] = $authControl;
-
-
 
         return view('frontend.pages.contact', $data);
     }
@@ -481,19 +456,10 @@ class HomePageController extends Controller
 
 
 
-        $shops = Shopping::where(function ($q) use ($user_id, $session_id) {
-            if ($user_id) {
-                // Kullanıcı ID'sine göre filtrele
-                $q->where('user_id', $user_id);
-            } else {
-                // Oturum ID'sine göre filtrele
-                $q->where('session_id', $session_id);
-            }
-        })->sum('product_qty');
+        $shops = getAuthController();
 
 
         $data['shops'] = $shops;
-
         $data['categories'] = $categories;
         $data['userorders'] = $userorders;
 

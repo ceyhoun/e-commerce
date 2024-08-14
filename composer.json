@@ -8,6 +8,7 @@
         "php": "^8.2",
         "cviebrock/eloquent-sluggable": "^11.0",
         "laravel/framework": "^11.9",
+        "laravel/helpers": "^1.7",
         "laravel/tinker": "^2.9"
     },
     "require-dev": {
@@ -24,7 +25,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
