@@ -20,7 +20,7 @@
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
                                         magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="{{route('shop',['filtre'=>'kisi-geyimi'])}}">Shop Now</a>
+                                        href="{{ route('shop', ['filtre' => 'kisi-geyimi']) }}">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
                                         magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="{{route('shop',['filtre'=>'qadin-geyimi'])}}">Shop Now</a>
+                                        href="{{ route('shop', ['filtre' => 'qadin-geyimi']) }}">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@
                                     <p class="mx-md-5 px-5 animate__animated animate__bounceIn">Lorem rebum magna amet lorem
                                         magna erat diam stet. Sadips duo stet amet amet ndiam elitr ipsum diam</p>
                                     <a class="btn btn-outline-light py-2 px-4 mt-3 animate__animated animate__fadeInUp"
-                                        href="{{route('shop',['filtre'=>'usaq-geyimi'])}}">Shop Now</a>
+                                        href="{{ route('shop', ['filtre' => 'usaq-geyimi']) }}">Shop Now</a>
                                 </div>
                             </div>
                         </div>
@@ -114,19 +114,19 @@
                 class="bg-secondary pr-3">Categories</span></h2>
         <div class="row px-xl-5 pb-3">
             @foreach ($categories as $category)
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <a class="text-decoration-none" href="{{ route('shop', ['parent'=>$category->slug]) }}">
-                    <div class="cat-item d-flex align-items-center mb-4">
-                        <div class="overflow-hidden" style="width: 100px; height: 100px;">
-                            <img class="img-fluid" src="{{url("$category->image")}}" alt="">
+                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                    <a class="text-decoration-none" href="{{ route('shop', ['parent' => $category->slug]) }}">
+                        <div class="cat-item d-flex align-items-center mb-4">
+                            <div class="overflow-hidden" style="width: 100px; height: 100px;">
+                                <img class="img-fluid" src="{{ url("$category->image") }}" alt="">
+                            </div>
+                            <div class="flex-fill pl-3">
+                                <h6>{{ $category->name }}</h6>
+                                <small class="text-body">100 Products</small>
+                            </div>
                         </div>
-                        <div class="flex-fill pl-3">
-                            <h6>{{$category->name}}</h6>
-                            <small class="text-body">100 Products</small>
-                        </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
             @endforeach
         </div>
     </div>
@@ -139,16 +139,16 @@
                 Məhsullar</span></h2>
         <div class="row px-xl-5">
             @foreach ($products as $product)
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="{{url("$product->images")}}" alt="{{$product->name}}">
+                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src="{{ url("$product->images") }}" alt="{{ $product->name }}">
                             <div class="product-action">
 
-                                    <button type="submit" class="btn btn-outline-dark btn-square">
-                                        <i class="fa fa-shopping-cart"></i> <!-- İcon ve Buton -->
-                                    </button>
-                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                <a href="{{ route('additem', $product->id) }}" class="btn btn-outline-dark btn-square">
+                                    <i class="fa fa-shopping-cart"></i>
+                                </a>
+                                <a class="btn btn-outline-dark btn-square btn-fav" data-item-id="{{ $product->id }}"><i
                                         class="far fa-heart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-sync-alt"></i></a>
@@ -157,9 +157,10 @@
                             </div>
                         </div>
                         <div class="text-center py-4">
-                            <a class="h6 text-decoration-none text-truncate" href="{{ route('detail',$product->slug) }}">{{$product->name}}</a>
+                            <a class="h6 text-decoration-none text-truncate"
+                                href="{{ route('detail', $product->slug) }}">{{ $product->name }}</a>
                             <div class="d-flex align-items-center justify-content-center mt-2">
-                                <h5>{{$product->price}} tl</h5>
+                                <h5>{{ $product->price }} tl</h5>
                                 <h6 class="text-muted ml-2"><del>123.00 tl</del></h6>
                             </div>
                             <div class="d-flex align-items-center justify-content-center mb-1">
@@ -172,7 +173,7 @@
                             </div>
                         </div>
                     </div>
-            </div>
+                </div>
             @endforeach
 
         </div>
@@ -214,35 +215,39 @@
                 Products</span></h2>
         <div class="row px-xl-5">
             @foreach ($productsDesc as $item)
-            <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
-                <div class="product-item bg-light mb-4">
-                    <div class="product-img position-relative overflow-hidden">
-                        <img class="img-fluid w-100" src="{{url('$item->image')}}" alt="">
-                        <div class="product-action">
-                            <a class="btn btn-outline-dark btn-square" href=""><i
-                                    class="fa fa-shopping-cart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="far fa-heart"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-sync-alt"></i></a>
-                            <a class="btn btn-outline-dark btn-square" href=""><i class="fa fa-search"></i></a>
+                <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
+                    <div class="product-item bg-light mb-4">
+                        <div class="product-img position-relative overflow-hidden">
+                            <img class="img-fluid w-100" src="{{ url('$item->image') }}" alt="">
+                            <div class="product-action">
+                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                        class="fa fa-shopping-cart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                        class="far fa-heart"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                        class="fa fa-sync-alt"></i></a>
+                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                        class="fa fa-search"></i></a>
+                            </div>
                         </div>
-                    </div>
-                    <div class="text-center py-4">
-                        <a class="h6 text-decoration-none text-truncate" href="{{route('detail',$item->slug )}}">{{$item->name}}</a>
-                        <div class="d-flex align-items-center justify-content-center mt-2">
-                            <h5>{{$item->price}}tl</h5>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center mb-1">
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small class="fa fa-star text-primary mr-1"></small>
-                            <small>(99)</small>
+                        <div class="text-center py-4">
+                            <a class="h6 text-decoration-none text-truncate"
+                                href="{{ route('detail', $item->slug) }}">{{ $item->name }}</a>
+                            <div class="d-flex align-items-center justify-content-center mt-2">
+                                <h5>{{ $item->price }}tl</h5>
+                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center mb-1">
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small class="fa fa-star text-primary mr-1"></small>
+                                <small>(99)</small>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             @endforeach
         </div>
     </div>
@@ -283,4 +288,39 @@
         </div>
     </div>
     <!-- Vendor End -->
+@endsection
+@section('contet')
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                $('.btn-fav').click(function(e) {
+                    e.preventDefault();
+
+                    let $this = $(this);
+                    let itemId = $this.data('item-id');
+
+                    $.ajax({
+                        type: "POST",
+                        url: `/fav/addfav/${itemId}`,
+                        data: {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            console.log('Başarıyla eklendi:',response.item_id);
+
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Hata oluştu:', error);
+                            console.error('Sunucu yanıtı:', xhr.responseText);
+                        }
+                    });
+
+                });
+
+
+
+            });
+        </script>
+    @endpush
 @endsection

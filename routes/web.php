@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartControllers;
+use App\Http\Controllers\FavoryControllers;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\PanelCotrollers;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,7 @@ Route::get('/checkout', [HomePageController::class, 'checkout'])->name('checkout
 Route::get('/cart', [HomePageController::class, 'cart'])->name('cart');
 Route::get('/error', [HomePageController::class, 'error'])->name('error');
 Route::post('/sent/messages',[HomePageController::class,'messages'])->name('messages');
+Route::get('/favory',[HomePageController::class,'favory'])->name('favory');
 
 
 //chars
@@ -67,11 +69,7 @@ Route::get('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->n
 Route::post('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->name('additem');
 
 //cartdelete
-
-
 Route::delete('/cart/item/{id}/{product_id}', [CartControllers::class, 'itemDelete'])->name('itemDelete');
-//sent messages
 
-
-
-//
+//favory
+Route::post('fav/addfav/{productId}',[FavoryControllers::class,'addFavory'])->name('addfavory');

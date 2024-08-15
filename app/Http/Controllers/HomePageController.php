@@ -28,7 +28,9 @@ class HomePageController extends Controller
 
         $data['categories'] = $categories;
 
-        $shops = Shopping::sum('product_qty');
+        $shops = getAuthController();
+
+
 
 
         $data['shops'] = $shops;
@@ -65,8 +67,7 @@ class HomePageController extends Controller
 
         $data['categories'] = $categories;
 
-        $shops = Shopping::sum('product_qty');
-
+        $shops = getAuthController();
 
         $data['shops'] = $shops;
 
@@ -463,6 +464,17 @@ class HomePageController extends Controller
         $data['userorders'] = $userorders;
 
         return view('frontend.pages.cart', $data);
+    }
+
+    public function favory()
+    {
+        $categories = Category::whereStatus('1')
+        ->get();
+        $shops=getAuthController();
+        $data['categories'] = $categories;
+        $data['shops'] = $shops;
+        return view('frontend.pages.favory',$data);
+
     }
 
 }

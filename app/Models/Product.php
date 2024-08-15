@@ -59,4 +59,9 @@ class Product extends Model
     {
         return $this->belongsTo(Shopping::class);
     }
+
+    public function favorites()
+    {
+        return $this->belongsTo(Favory::class);
+    }
 }

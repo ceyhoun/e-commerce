@@ -124,7 +124,7 @@
                             <a href="{{ route('contact') }}" class="nav-item nav-link {{request()->routeIs('contact') ? $active : '' }}">Contact</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                            <a href="" class="btn px-0">
+                            <a href="{{route('favory')}}" class="btn px-0">
                                 <i class="fas fa-heart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle"
                                     style="padding-bottom: 2px;">0</span>
