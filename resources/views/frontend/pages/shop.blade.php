@@ -146,12 +146,15 @@
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle"
                                         data-toggle="dropdown">Kateqoriyalara göre</button>
                                     <div class="dropdown-menu dropdown-menu-right">
+                                        @if (! empty($subcategories) && $subcategories->count() > 0)
                                         @foreach ($subcategories as $subcategory)
-                                            <a class="dropdown-item"
-                                                href="{{ route('shop', ['filtre' => $subcategory->slug]) }}">{{ $subcategory->name }}
-                                                ({{ $subcategory->products_count }})
-                                            </a>
-                                        @endforeach
+                                        <a class="dropdown-item"
+                                            href="{{ route('shop', ['filtre' => $subcategory->slug]) }}">{{ $subcategory->name }}
+                                            ({{ $subcategory->products_count }})
+                                        </a>
+                                    @endforeach
+                                        @endif
+
                                     </div>
                                 </div>
                             </div>

@@ -2,27 +2,42 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
 class FavoryControllers extends Controller
 {
-    public function addFavory(Request $request,$productId)
+
+    public function addFavory(Request $request, $id)
     {
-        $item_id =$productId;
-        $favorites =$request->session()->get('favorites',[]);
+        $product = Product::find($id);
 
-        if (!is_array($favorites)) {
-            $favorites = [];
+        if ($product) {
+            $cart = session()->get('cart', []);
+
+            $cart[$id] = [
+                "name" => $product->name,
+                "quantity" => 1,
+                "price" => $product->price,
+                "images" => $product->images
+            ];
+
+            session()->put('cart', $cart);
+
+            return response()->json(
+                [
+                    'success' => true,
+                    'item_id' => $id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'images' => $product->images
+                ]
+            );
         }
 
-        if (!in_array($item_id,$favorites)) {
-            $favorites=$item_id;
-            session()->put('favorites',$favorites);
-        }
-
-        return response(['success'=>true,'item_id'=>$item_id]);
-
+        return response()->json(['success' => false, 'message' => 'Ürün bulunamadı.']);
     }
+
 }

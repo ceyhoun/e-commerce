@@ -477,4 +477,14 @@ class HomePageController extends Controller
 
     }
 
+    public function employee()
+    {
+        $categories = Category::whereStatus('1')->get();
+        $shops =getAuthController();
+        $data['shops']=$shops;
+        $data['categories']=$categories;
+
+        return view('frontend.pages.employee',$data);
+    }
+
 }

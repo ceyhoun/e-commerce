@@ -74,8 +74,6 @@
         </div>
     </div>
     <!-- Carousel End -->
-
-
     <!-- Featured Start -->
     <div class="container-fluid pt-5">
         <div class="row px-xl-5 pb-3">
@@ -106,8 +104,6 @@
         </div>
     </div>
     <!-- Featured End -->
-
-
     <!-- Categories Start -->
     <div class="container-fluid pt-5">
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span
@@ -131,8 +127,6 @@
         </div>
     </div>
     <!-- Categories End -->
-
-
     <!-- Products Start -->
     <div class="container-fluid pt-5 pb-3">
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Bütün
@@ -179,8 +173,6 @@
         </div>
     </div>
     <!-- Products End -->
-
-
     <!-- Offer Start -->
     <div class="container-fluid pt-5 pb-3">
         <div class="row px-xl-5">
@@ -207,8 +199,6 @@
         </div>
     </div>
     <!-- Offer End -->
-
-
     <!-- Products Start -->
     <div class="container-fluid pt-5 pb-3">
         <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Recent
@@ -252,8 +242,6 @@
         </div>
     </div>
     <!-- Products End -->
-
-
     <!-- Vendor Start -->
     <div class="container-fluid py-5">
         <div class="row px-xl-5">
@@ -303,11 +291,13 @@
                         type: "POST",
                         url: `/fav/addfav/${itemId}`,
                         data: {
-                            _token: $('meta[name="csrf-token"]').attr('content')
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            item_id: itemId
                         },
                         dataType: "json",
                         success: function(response) {
-                            console.log('Başarıyla eklendi:',response.item_id);
+                            showfavdata(response.name);
+                            $this.find('i').removeClass('far').addClass('fas');
 
                         },
                         error: function(xhr, status, error) {
@@ -316,10 +306,11 @@
                         }
                     });
 
+                    function showfavdata(ress) {
+                        console.log('Favorilere eklendi: ' + ress);
+                    }
+
                 });
-
-
-
             });
         </script>
     @endpush
