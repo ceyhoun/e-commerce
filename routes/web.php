@@ -27,13 +27,13 @@ Route::group(['prefix'=>'admin'],function () {
         Route::post('forms/addcategory', [PanelCotrollers::class, 'addcategory'])->name('addcategory');
         Route::get('forms/products', [PanelCotrollers::class, 'products'])->name('products');
         Route::post('forms/addproducts', [PanelCotrollers::class, 'addproducts'])->name('addproducts');
+        Route::get('forms/add/employee', [PanelCotrollers::class, 'pemployee'])->name('pemployee');
+        Route::post('forms/add/new/employee', [PanelCotrollers::class, 'addpemployee'])->name('addpemployee');
         //tables
         Route::get('/tables', [PanelCotrollers::class, 'tables'])->name('tables');
         Route::get('/admlogout', [PanelCotrollers::class, 'admlogout'])->name('admlogout');
         Route::get('/mailbox',[PanelCotrollers::class,'mailbox'])->name('mailbox');
 });
-
-
 
 });
 //Pages-frontend

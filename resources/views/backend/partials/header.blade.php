@@ -252,6 +252,12 @@
                   <p>Məhsul əlavə edin</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{route('pemployee')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>İşçi əlavə edin</p>
+                </a>
+              </li>
             </ul>
           </li>
           <li class="nav-item">

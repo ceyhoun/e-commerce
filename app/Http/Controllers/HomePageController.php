@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Contact;
+use App\Models\Employee;
 use App\Models\Product;
 use App\Models\Shopping;
 use App\Models\Size;
@@ -481,10 +482,13 @@ class HomePageController extends Controller
     {
         $categories = Category::whereStatus('1')->get();
         $shops =getAuthController();
+        $employies=Employee::whereStatus('1')->get();
         $data['shops']=$shops;
         $data['categories']=$categories;
+        $data['employies']=$employies;
 
         return view('frontend.pages.employee',$data);
     }
+
 
 }

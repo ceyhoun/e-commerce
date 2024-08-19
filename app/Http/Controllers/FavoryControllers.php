@@ -15,16 +15,16 @@ class FavoryControllers extends Controller
         $product = Product::find($id);
 
         if ($product) {
-            $cart = session()->get('cart', []);
+            $favorites = session()->get('favorites', []);
 
-            $cart[$id] = [
+            $favorites[$id] = [
                 "name" => $product->name,
                 "quantity" => 1,
                 "price" => $product->price,
                 "images" => $product->images
             ];
 
-            session()->put('cart', $cart);
+            session()->put('favorites', $favorites);
 
             return response()->json(
                 [

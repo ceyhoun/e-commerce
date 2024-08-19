@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Employee;
 use App\Models\Product;
 use App\Models\Shopping;
 use App\Models\Size;
@@ -202,6 +203,58 @@ class PanelCotrollers extends Controller
         }
     }
 
+    public function pemployee()
+    {
+        return view('backend.section.forms.addemployee');
+    }
+
+    public function addpemployee(Request $request)
+    {
+        $name = $request->input('empname');
+        $surname = $request->input('empsurname');
+        $role = $request->input('empsurrole');
+        $slug = Str::slug($name);
+        $status = $request->input('empcheck') === 'on' ? '1' : '0';
+
+        $image = null;
+        if ($request->hasFile('empimg')) {
+            $file = $request->file('empimg');
+
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $extention =$file->getClientOriginalExtension();
+
+            if ($file->isValid() && in_array($extention,$allowedExtensions)) {
+                $image_name =time(). '.' .$extention;
+                $file->move(public_path('employee_images'), $image_name);
+                $image="employee_images/".$image_name;
+            }else {
+                return back()->withErrors(['error' => 'Geçersiz dosya formatı veya dosya boyutu çok büyük']);
+            }
+
+        }
+
+        $employee =Employee::create(
+            [
+                'name' => $name,
+                'surname' =>$surname,
+                'role' => $role,
+                'slug' =>$slug,
+                'image' =>$image,
+                'status' =>$status
+            ]
+            );
+
+        if ($employee) {
+            return redirect()->back()->with('success','True');
+        }
+
+        return redirect()->back()->with('danger','false');
+
+
+    }
+
+
+
 
     public function tables()
     {
@@ -232,6 +285,7 @@ class PanelCotrollers extends Controller
         return view('backend.section.charts.chartjs');
     }
 
+
     //message
 
     public function mailbox()
@@ -244,7 +298,7 @@ class PanelCotrollers extends Controller
 
         $data['shops'] = $shops;
 
-        return view('backend.section.mailbox.mailbox',$data);
+        return view('backend.section.mailbox.mailbox', $data);
     }
 
 }

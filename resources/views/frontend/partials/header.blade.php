@@ -3,24 +3,8 @@
         <div class="row bg-secondary py-1 px-xl-5">
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
-                    <div class="btn-group mx-2">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                            data-toggle="dropdown">USD</button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">EUR</button>
-                            <button class="dropdown-item" type="button">GBP</button>
-                            <button class="dropdown-item" type="button">CAD</button>
-                        </div>
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                            data-toggle="dropdown">EN</button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <button class="dropdown-item" type="button">FR</button>
-                            <button class="dropdown-item" type="button">AR</button>
-                            <button class="dropdown-item" type="button">RU</button>
-                        </div>
-                    </div>
+
+
                 </div>
                 <div class="d-inline-flex align-items-center d-block d-lg-none">
                     <a href="" class="btn px-0 ml-2">
@@ -56,8 +40,24 @@
                 </form>
             </div>
             <div class="col-lg-4 col-6 text-right">
-                <p class="m-0">Customer Service</p>
-                <h5 class="m-0">+012 345 6789</h5>
+                <div class="btn-group mx-2">
+                    <button type="button" class="btn btn-sm btn-light dropdown-toggle"
+                        data-toggle="dropdown">USD</button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <button class="dropdown-item" type="button">EUR</button>
+                        <button class="dropdown-item" type="button">GBP</button>
+                        <button class="dropdown-item" type="button">CAD</button>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-light dropdown-toggle"
+                        data-toggle="dropdown">EN</button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <button class="dropdown-item" type="button">FR</button>
+                        <button class="dropdown-item" type="button">AR</button>
+                        <button class="dropdown-item" type="button">RU</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -114,6 +114,7 @@
                             @endphp
                             <a href="{{ route('home') }}" class="nav-item nav-link {{ request()->routeIs('home') ? $active : '' }}">Home</a>
                             <a href="{{ route('shop') }}" class="nav-item nav-link {{ request()->routeIs('shop') ? $active : '' }}">Shop</a>
+                            <!--
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages <i
                                         class="fa fa-angle-down mt-1"></i></a>
@@ -121,6 +122,9 @@
                                     <a href="{{ route('checkout') }}" class="dropdown-item">Checkout</a>
                                 </div>
                             </div>
+                            -->
+                            <a href="{{ route('employee') }}" class="nav-item nav-link {{ request()->routeIs('employee') ? $active : '' }}">Employee</a>
+
                             <a href="{{ route('contact') }}" class="nav-item nav-link {{request()->routeIs('contact') ? $active : '' }}">Contact</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
