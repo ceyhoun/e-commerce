@@ -258,6 +258,12 @@
                   <p>İşçi əlavə edin</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="{{route('referances')}}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Partnyor əlavə edin</p>
+                </a>
+              </li>
             </ul>
           </li>
           <li class="nav-item">

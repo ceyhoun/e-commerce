@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Employee;
 use App\Models\Product;
+use App\Models\Referance;
 use App\Models\Shopping;
 use App\Models\Size;
 use App\Models\Subcategory;
@@ -213,7 +214,7 @@ class PanelCotrollers extends Controller
         $name = $request->input('empname');
         $surname = $request->input('empsurname');
         $role = $request->input('empsurrole');
-        $slug = Str::slug($name);
+        $slug = Str::slug($name . $surname);
         $status = $request->input('empcheck') === 'on' ? '1' : '0';
 
         $image = null;
@@ -221,34 +222,34 @@ class PanelCotrollers extends Controller
             $file = $request->file('empimg');
 
             $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-            $extention =$file->getClientOriginalExtension();
+            $extention = $file->getClientOriginalExtension();
 
-            if ($file->isValid() && in_array($extention,$allowedExtensions)) {
-                $image_name =time(). '.' .$extention;
+            if ($file->isValid() && in_array($extention, $allowedExtensions)) {
+                $image_name = time() . '.' . $extention;
                 $file->move(public_path('employee_images'), $image_name);
-                $image="employee_images/".$image_name;
-            }else {
+                $image = "employee_images/" . $image_name;
+            } else {
                 return back()->withErrors(['error' => 'Geçersiz dosya formatı veya dosya boyutu çok büyük']);
             }
 
         }
 
-        $employee =Employee::create(
+        $employee = Employee::create(
             [
                 'name' => $name,
-                'surname' =>$surname,
+                'surname' => $surname,
                 'role' => $role,
-                'slug' =>$slug,
-                'image' =>$image,
-                'status' =>$status
+                'slug' => $slug,
+                'image' => $image,
+                'status' => $status
             ]
-            );
+        );
 
         if ($employee) {
-            return redirect()->back()->with('success','True');
+            return redirect()->back()->with('success', 'True');
         }
 
-        return redirect()->back()->with('danger','false');
+        return redirect()->back()->with('danger', 'false');
 
 
     }
@@ -301,4 +302,44 @@ class PanelCotrollers extends Controller
         return view('backend.section.mailbox.mailbox', $data);
     }
 
+    public function referances()
+    {
+        return view('backend.section.forms.referance');
+    }
+
+    public function addreferances(Request $request)
+    {
+        $name = $request->refname;
+        $status = $request->refstatus === 'on' ? '1' : '0';
+
+        $image = null;
+        if ($request->hasFile('reffile')) {
+            $file = $request->file('reffile');
+
+            // Dosya türü kontrolü
+            $allowedExtensions = ['jpg', 'jpeg', 'png'];
+            $extension = $file->getClientOriginalExtension();
+
+            if ($file->isValid() && in_array($extension, $allowedExtensions)) {
+                $imageName = time() . '.' . $extension;
+                $file->move(public_path('referances_images'), $imageName);
+                $image = "referances_images/" . $imageName;
+            } else {
+                // Dosya yükleme başarısız
+                return back()->withErrors(['error' => 'Geçersiz dosya formatı veya dosya boyutu çok büyük']);
+            }
+        }
+
+
+        $referance = Referance::create([
+            'name' => $name,
+            'image' => $image,
+            'status' => $status,
+        ]);
+
+        if ($referance) {
+            return redirect()->back()->with('success', 'Elave Edildi');
+        }
+        return redirect()->back()->with('error', 'Xeta...');
+    }
 }

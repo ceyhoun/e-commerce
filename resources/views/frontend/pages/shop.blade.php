@@ -7,6 +7,8 @@
     <!-- Shop Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
+
+
             <!-- Shop Sidebar Start -->
             <div class="col-lg-3 col-md-4">
                 <!-- Price Start -->
@@ -162,6 +164,7 @@
                     </div>
                     <div class="col-12 ">
                         <div class="row product-list">
+                            {{ $products->links() }}
                             @if (!empty($products) && $products->count() > 0)
                                 @foreach ($products as $product)
                                     <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
@@ -201,6 +204,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-12 mb-3">
+                {{ $products->links() }}
             </div>
             @if (isset($products) && $products->count() > 1)
                 <div class="col-12">
@@ -280,7 +286,7 @@
                                     <div class="text-center py-4">
                                         <a class="h6 text-decoration-none text-truncate" href="/detail/${item.slug}">${item.name}</a>
                                         <div class="d-flex align-items-center justify-content-center mt-2">
-                                            <h5>$${item.price}</h5>
+                                            <h5>$${item.price} AZN (MANAT)</h5>
                                             <h6 class="text-muted ml-2"><del>$9</del></h6>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center mb-1">
@@ -339,7 +345,7 @@
                                     <div class="text-center py-4">
                                         <a class="h6 text-decoration-none text-truncate" href="/detail/${items.slug}">${items.name}</a>
                                         <div class="d-flex align-items-center justify-content-center mt-2">
-                                            <h5>${items.price}</h5>
+                                            <h5>${items.price} AZN (MANAT)</h5>
                                             <h6 class="text-muted ml-2"><del>$9</del></h6>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center mb-1">

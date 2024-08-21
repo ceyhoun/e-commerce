@@ -24,7 +24,7 @@
                                         {{ $order->products->name }}
                                     </td>
                                     <td class="align-middle">
-                                        <img src="{{ url('$order->images') }}" alt="image" style="width: 100px; height: auto;">
+                                        <img src="{{ url($order->products->images) }}" alt="image" style="width: 30px;">
                                     </td>
 
                                     <td class="align-middle">{{ $order->products->price }}</td>

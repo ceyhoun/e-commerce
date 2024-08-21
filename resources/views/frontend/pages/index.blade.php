@@ -139,7 +139,7 @@
                             <img class="img-fluid w-100" src="{{ url("$product->images") }}" alt="{{ $product->name }}">
                             <div class="product-action">
 
-                                <a href="{{ route('additem', $product->id) }}" class="btn btn-outline-dark btn-square">
+                                <a href="" class="btn btn-outline-dark btn-square btn-basket" data-item-id="{{ $product->id }}">
                                     <i class="fa fa-shopping-cart"></i>
                                 </a>
                                 <a class="btn btn-outline-dark btn-square btn-fav" data-item-id="{{ $product->id }}"><i
@@ -201,14 +201,13 @@
     <!-- Offer End -->
     <!-- Products Start -->
     <div class="container-fluid pt-5 pb-3">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Recent
-                Products</span></h2>
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Son Əlavə Olunanlar</span></h2>
         <div class="row px-xl-5">
             @foreach ($productsDesc as $item)
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
                     <div class="product-item bg-light mb-4">
                         <div class="product-img position-relative overflow-hidden">
-                            <img class="img-fluid w-100" src="{{ url('$item->image') }}" alt="">
+                            <img class="img-fluid w-100" src="{{ url("$item->images") }}" alt="">
                             <div class="product-action">
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-shopping-cart"></i></a>
@@ -247,30 +246,14 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel vendor-carousel">
+                    @if (! empty ($referances) && $referances->count() >0)
+                    @foreach ($referances as $referance)
                     <div class="bg-light p-4">
-                        <img src="img/vendor-1.jpg" alt="">
+                        <img src="{{url("$referance->image")}}" alt="" class="img-fluid">
                     </div>
-                    <div class="bg-light p-4">
-                        <img src="img/vendor-2.jpg" alt="">
-                    </div>
-                    <div class="bg-light p-4">
-                        <img src="img/vendor-3.jpg" alt="">
-                    </div>
-                    <div class="bg-light p-4">
-                        <img src="img/vendor-4.jpg" alt="">
-                    </div>
-                    <div class="bg-light p-4">
-                        <img src="img/vendor-5.jpg" alt="">
-                    </div>
-                    <div class="bg-light p-4">
-                        <img src="img/vendor-6.jpg" alt="">
-                    </div>
-                    <div class="bg-light p-4">
-                        <img src="img/vendor-7.jpg" alt="">
-                    </div>
-                    <div class="bg-light p-4">
-                        <img src="img/vendor-8.jpg" alt="">
-                    </div>
+                    @endforeach
+                    @endif
+
                 </div>
             </div>
         </div>
@@ -307,7 +290,7 @@
                     });
 
                     function showfavdata(ress) {
-                        console.log('Favorilere eklendi: ' + ress);
+                       alert(ress +'added to favorites: ' );
                     }
 
                 });

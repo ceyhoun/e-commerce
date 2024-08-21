@@ -150,8 +150,11 @@
                                     <button type="button" class="btn btn-sm dropdown-toggle"
                                         data-toggle="dropdown"><i class="fa-solid fa-caret-down"></i></button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <button class="dropdown-item text-decoration-none" type="button"><a
+                                        <button class="dropdown-item " type="button"><a class="text-decoration-none"
+                                            href="#">Ayarlar</a>
+                                        <button class="dropdown-item" type="button"><a class="text-decoration-none"
                                                 href="{{ route('userlogout') }}">Çıxış Et</a></button>
+
                                     </div>
                                 </div>
                             @else

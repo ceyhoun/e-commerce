@@ -29,6 +29,9 @@ Route::group(['prefix'=>'admin'],function () {
         Route::post('forms/addproducts', [PanelCotrollers::class, 'addproducts'])->name('addproducts');
         Route::get('forms/add/employee', [PanelCotrollers::class, 'pemployee'])->name('pemployee');
         Route::post('forms/add/new/employee', [PanelCotrollers::class, 'addpemployee'])->name('addpemployee');
+        //referances
+        Route::get('/forms/referances',[PanelCotrollers::class,'referances'])->name('referances');
+        Route::post('/forms/add/referances',[PanelCotrollers::class,'addreferances'])->name('addreferances');
         //tables
         Route::get('/tables', [PanelCotrollers::class, 'tables'])->name('tables');
         Route::get('/admlogout', [PanelCotrollers::class, 'admlogout'])->name('admlogout');
@@ -74,3 +77,5 @@ Route::delete('/cart/item/{id}/{product_id}', [CartControllers::class, 'itemDele
 
 //favory
 Route::post('fav/addfav/{productId}',[FavoryControllers::class,'addFavory'])->name('addfavory');
+
+Route::get('/favorites', [FavoryControllers::class, 'showFavorites'])->name('favorites');

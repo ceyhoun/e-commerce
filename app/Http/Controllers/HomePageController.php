@@ -7,6 +7,7 @@ use App\Models\Color;
 use App\Models\Contact;
 use App\Models\Employee;
 use App\Models\Product;
+use App\Models\Referance;
 use App\Models\Shopping;
 use App\Models\Size;
 use App\Models\Subcategory;
@@ -108,6 +109,8 @@ class HomePageController extends Controller
 
 
         $categories = Category::where('status', '1')->with('subcategories')->get();
+        $referances =Referance::where('status',1)->get();
+        $data['referances']=$referances;
         $subcategories = Subcategory::where('status', '1')->get();
         $data['subcategories'] = $subcategories;
 
@@ -147,7 +150,7 @@ class HomePageController extends Controller
         $data['shops'] = $shops;
         $data['products'] = $products;
         $data['categories'] = $categories;
-        $productsDesc = Product::whereStatus('1')->orderBy('created_at', 'asc')->limit(5)->get();
+        $productsDesc = Product::whereStatus('1')->orderBy('created_at', 'asc')->limit(3)->get();
         $data['productsDesc'] = $productsDesc;
 
 
@@ -217,10 +220,7 @@ class HomePageController extends Controller
     public function shop(Request $request)
     {
 
-
-
         $shops = getAuthController();
-
 
         $data['shops'] = $shops;
         $categories = Category::all();
@@ -230,7 +230,6 @@ class HomePageController extends Controller
             ->groupBy('sizes.id')
             ->get();
         $allTotalSize = $sizes->sum('totalSize');
-
         $colors = Color::select('colors.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as totalColor'))
             ->join('product_size_color', 'colors.id', '=', 'product_size_color.color_id')
             ->groupBy('colors.id')
@@ -344,7 +343,8 @@ class HomePageController extends Controller
             }
         }
 
-        $products = $productQuery->get();
+        $products = $productQuery->paginate(5);
+
         $data['products'] = $products;
         return view('frontend.pages.shop', $data);
 
@@ -472,8 +472,11 @@ class HomePageController extends Controller
         $categories = Category::whereStatus('1')
         ->get();
         $shops=getAuthController();
+        $favorites = session()->get('favorites', []);
+
         $data['categories'] = $categories;
         $data['shops'] = $shops;
+        $data['favorites'] = $favorites;
         return view('frontend.pages.favory',$data);
 
     }
@@ -489,6 +492,7 @@ class HomePageController extends Controller
 
         return view('frontend.pages.employee',$data);
     }
+
 
 
 }

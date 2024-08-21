@@ -40,4 +40,18 @@ class FavoryControllers extends Controller
         return response()->json(['success' => false, 'message' => 'Ürün bulunamadı.']);
     }
 
+    public function showFavorites()
+    {
+        $favorites = session()->get('favorites', []);
+
+        $favCount =count($favorites);
+
+
+        $data['favorites'] = $favorites;
+        $data['favCount'] = $favCount;
+
+        return view('frontend.favorites', $data);
+    }
+
+
 }
