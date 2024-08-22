@@ -62,6 +62,6 @@ class Product extends Model
 
     public function favorites()
     {
-        return $this->belongsTo(Favory::class);
+        return $this->hasMany(Favory::class);
     }
 }

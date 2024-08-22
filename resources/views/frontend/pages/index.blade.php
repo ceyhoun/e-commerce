@@ -288,12 +288,13 @@
                             console.error('Sunucu yanıtı:', xhr.responseText);
                         }
                     });
-
-                    function showfavdata(ress) {
-                       alert(ress +'added to favorites: ' );
+                    function showfavdata(responsename) {
+                       alert('added to favorites: ' + responsename );
                     }
 
                 });
+
+
             });
         </script>
     @endpush

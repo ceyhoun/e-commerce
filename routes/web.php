@@ -76,6 +76,6 @@ Route::post('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->
 Route::delete('/cart/item/{id}/{product_id}', [CartControllers::class, 'itemDelete'])->name('itemDelete');
 
 //favory
-Route::post('fav/addfav/{productId}',[FavoryControllers::class,'addFavory'])->name('addfavory');
+Route::post('fav/addfav/{product_id}',[FavoryControllers::class,'addFavory'])->name('addfavory');
 
 Route::get('/favorites', [FavoryControllers::class, 'showFavorites'])->name('favorites');

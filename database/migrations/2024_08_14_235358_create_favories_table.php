@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('session_id')->nullable();
             $table->unsignedBigInteger('product_id');
-            $table->bigInteger('favqty');
+            $table->bigInteger('favqty')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
@@ -31,4 +31,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('favories');
     }
+
 };

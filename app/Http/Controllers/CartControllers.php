@@ -77,6 +77,7 @@ class CartControllers extends Controller
             ->decrement('qty', $cartqty);
 
         return redirect()->back()->with('success', 'Uğurla Elave Olundu!...');
+
     }
 
     public function itemDelete($id, $product_id)

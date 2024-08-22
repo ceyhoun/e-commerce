@@ -10,7 +10,7 @@ class Favory extends Model
     use HasFactory;
 
 
-    protected $table ='favorites';
+    protected $table ='favories';
 
     protected $fillable =[
         'user_id',
