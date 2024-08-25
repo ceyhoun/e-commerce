@@ -139,7 +139,8 @@
                             <img class="img-fluid w-100" src="{{ url("$product->images") }}" alt="{{ $product->name }}">
                             <div class="product-action">
 
-                                <a href="" class="btn btn-outline-dark btn-square btn-basket" data-item-id="{{ $product->id }}">
+                                <a href="" class="btn btn-outline-dark btn-square btn-basket"
+                                    data-item-id="{{ $product->id }}">
                                     <i class="fa fa-shopping-cart"></i>
                                 </a>
                                 <a class="btn btn-outline-dark btn-square btn-fav" data-item-id="{{ $product->id }}"><i
@@ -201,7 +202,8 @@
     <!-- Offer End -->
     <!-- Products Start -->
     <div class="container-fluid pt-5 pb-3">
-        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Son Əlavə Olunanlar</span></h2>
+        <h2 class="section-title position-relative text-uppercase mx-xl-5 mb-4"><span class="bg-secondary pr-3">Son Əlavə
+                Olunanlar</span></h2>
         <div class="row px-xl-5">
             @foreach ($productsDesc as $item)
                 <div class="col-lg-3 col-md-4 col-sm-6 pb-1">
@@ -246,12 +248,12 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel vendor-carousel">
-                    @if (! empty ($referances) && $referances->count() >0)
-                    @foreach ($referances as $referance)
-                    <div class="bg-light p-4">
-                        <img src="{{url("$referance->image")}}" alt="" class="img-fluid">
-                    </div>
-                    @endforeach
+                    @if (!empty($referances) && $referances->count() > 0)
+                        @foreach ($referances as $referance)
+                            <div class="bg-light p-4">
+                                <img src="{{ url("$referance->image") }}" alt="" class="img-fluid">
+                            </div>
+                        @endforeach
                     @endif
 
                 </div>
@@ -281,20 +283,30 @@
                         success: function(response) {
                             showfavdata(response.name);
                             $this.find('i').removeClass('far').addClass('fas');
-
                         },
                         error: function(xhr, status, error) {
                             console.error('Hata oluştu:', error);
                             console.error('Sunucu yanıtı:', xhr.responseText);
                         }
                     });
-                    function showfavdata(responsename) {
-                       alert('added to favorites: ' + responsename );
+
+                    function showfavdata(itemName) {
+                        if (itemName) {
+                            Swal.fire({
+                                title:'success',
+                                text: itemName + ' eklendi.',
+                                icon: 'success',
+                            })
+                        } else {
+                            Swal.fire({
+                                title:'success',
+                                text: 'favda',
+                                icon: 'error',
+                            })
+                        }
                     }
 
                 });
-
-
             });
         </script>
     @endpush

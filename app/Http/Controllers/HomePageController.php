@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Contact;
 use App\Models\Employee;
+use App\Models\Favory;
 use App\Models\Product;
 use App\Models\Referance;
 use App\Models\Shopping;
@@ -32,7 +33,8 @@ class HomePageController extends Controller
 
         $shops = getAuthController();
 
-
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
 
 
         $data['shops'] = $shops;
@@ -73,6 +75,9 @@ class HomePageController extends Controller
 
         $data['shops'] = $shops;
 
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
+
         return view('frontend.auth.login', $data);
     }
 
@@ -99,6 +104,10 @@ class HomePageController extends Controller
             ->whereNull('user_id') // Sadece oturum ID'sine sahip öğeleri temizle
             ->delete();
 
+        Favory::where('session_id', $request->session()->getId())
+            ->whereNull('user_id')
+            ->delete();
+
         return redirect()->route('home');
     }
 
@@ -109,11 +118,15 @@ class HomePageController extends Controller
 
 
         $categories = Category::where('status', '1')->with('subcategories')->get();
-        $referances =Referance::where('status',1)->get();
-        $data['referances']=$referances;
+        $referances = Referance::where('status', 1)->get();
+        $data['referances'] = $referances;
         $subcategories = Subcategory::where('status', '1')->get();
         $data['subcategories'] = $subcategories;
+        $favcount = Favory::count();
+        $data['favcount'] = $favcount;
 
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
 
 
 
@@ -134,19 +147,8 @@ class HomePageController extends Controller
             ])
             ->get();
 
-        $user_id = Auth::id();
-        $session_id = $request->session()->get('_token');
 
-
-        $shops = Shopping::where(function ($q) use ($user_id, $session_id) {
-            if ($user_id) {
-                // Kullanıcı ID'sine göre filtrele
-                $q->where('user_id', $user_id);
-            } else {
-                // Oturum ID'sine göre filtrele
-                $q->where('session_id', $session_id);
-            }
-        })->sum('product_qty');
+        $shops = getAuthController();
         $data['shops'] = $shops;
         $data['products'] = $products;
         $data['categories'] = $categories;
@@ -170,7 +172,7 @@ class HomePageController extends Controller
         $singleProduct = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as productstock'))
             ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
             ->groupBy('products.id')
-            ->where('slug',$slug)
+            ->where('slug', $slug)
             ->first();
         if (!$singleProduct) {
             return redirect()->back();
@@ -193,23 +195,13 @@ class HomePageController extends Controller
             ->get();
 
 
-        $user_id = Auth::id();
-        $session_id = request()->session()->get('_token');
 
-
-        $shops = Shopping::where(function ($q) use ($user_id, $session_id) {
-            if ($user_id) {
-                // Kullanıcı ID'sine göre filtrele
-                $q->where('user_id', $user_id);
-            } else {
-                // Oturum ID'sine göre filtrele
-                $q->where('session_id', $session_id);
-            }
-        })->sum('product_qty');
+        $shops = getAuthController();
         $data['shops'] = $shops;
 
 
-
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
 
         $data['likeProducts'] = $likeProducts;
 
@@ -236,7 +228,8 @@ class HomePageController extends Controller
             ->get();
         ;
 
-
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
 
         $allTotalColor = $colors->sum('totalColor');
 
@@ -352,12 +345,14 @@ class HomePageController extends Controller
 
     public function contact()
     {
-        $shops =getAuthController();
+        $shops = getAuthController();
 
         $data['shops'] = $shops;
         $categories = Category::whereStatus('1')
             ->get();
         $data['categories'] = $categories;
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
 
         return view('frontend.pages.contact', $data);
     }
@@ -420,6 +415,8 @@ class HomePageController extends Controller
         } else {
             return redirect()->route('contact')->with('danger', 'Mesajınız Gönderilmedi');
         }
+
+
     }
 
 
@@ -455,7 +452,8 @@ class HomePageController extends Controller
             ->with('colors')
             ->get();
 
-
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
 
         $shops = getAuthController();
 
@@ -470,27 +468,53 @@ class HomePageController extends Controller
     public function favory()
     {
         $categories = Category::whereStatus('1')
-        ->get();
-        $shops=getAuthController();
-        $favorites = session()->get('favorites', []);
+            ->get();
+        $shops = getAuthController();
+
+        $user_id = Auth::id();
+        $session_id = request()->session()->get('_token');
+
+        $favorites = Favory::where(function($query) use ($user_id,$session_id){
+            if ($user_id) {
+                $query->where('user_id',$user_id);
+            }else {
+                $query->where('session_id', $session_id);
+            }
+        })
+
+        ->with([
+            'products' => function ($q) {
+                $q->select('id', 'name', 'price', 'images');
+            }
+        ])->get();
+
+
+
+
+
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
+
 
         $data['categories'] = $categories;
         $data['shops'] = $shops;
         $data['favorites'] = $favorites;
-        return view('frontend.pages.favory',$data);
+        return view('frontend.pages.favory', $data);
 
     }
 
     public function employee()
     {
         $categories = Category::whereStatus('1')->get();
-        $shops =getAuthController();
-        $employies=Employee::whereStatus('1')->get();
-        $data['shops']=$shops;
-        $data['categories']=$categories;
-        $data['employies']=$employies;
+        $shops = getAuthController();
+        $employies = Employee::whereStatus('1')->get();
+        $data['shops'] = $shops;
+        $data['categories'] = $categories;
+        $data['employies'] = $employies;
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
 
-        return view('frontend.pages.employee',$data);
+        return view('frontend.pages.employee', $data);
     }
 
 

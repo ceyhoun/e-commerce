@@ -12,11 +12,8 @@ class Favory extends Model
 
     protected $table ='favories';
 
-    protected $fillable =[
-        'user_id',
-        'session_id',
-        'product_id',
-    ];
+    protected $fillable = ['user_id', 'session_id', 'product_id', 'favqty', 'created_at', 'updated_at'];
+
 
     public function user()
     {

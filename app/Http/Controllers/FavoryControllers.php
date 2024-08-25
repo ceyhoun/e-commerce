@@ -13,12 +13,12 @@ class FavoryControllers extends Controller
     public function addFavory(Request $request, $product_id)
     {
         $user_id = Auth::id();
-        $session_id = request()->session()->get('_token');
+        $session_id = $request->session()->get('_token');
 
         $product = Product::where('status', 1)->find($product_id);
 
         if (!$product) {
-            return redirect()->back()->with('eroor', 'Məhsul Tapılmadı');
+            return redirect()->back()->with('error', 'Məhsul Tapılmadı');
         }
 
         $favory = Favory::where(function ($query) use ($user_id, $session_id) {
@@ -28,11 +28,9 @@ class FavoryControllers extends Controller
                 $query->where('session_id', $session_id);
             }
         })
-        ->with(['products',function($q){
-            $q->select('name');
-        }])
             ->where('product_id', $product_id)
             ->first();
+
 
         if ($favory) {
             return response()->json(['message' => 'Mehsul favlardadır'], 200);
@@ -52,4 +50,7 @@ class FavoryControllers extends Controller
             ], 200);
         }
     }
+
+
 }
+
