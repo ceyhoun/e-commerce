@@ -211,7 +211,6 @@ class HomePageController extends Controller
 
     public function shop(Request $request)
     {
-
         $shops = getAuthController();
 
         $data['shops'] = $shops;
@@ -289,27 +288,10 @@ class HomePageController extends Controller
                     });
                 }
 
-                if ($request->has('price')) {
-                    $minPrice = $request->minPrice ?? null;
-                    $maxPrice = $request->maxPrice ?? null;
 
-                    $productQuery->whereBetween('price', [$minPrice, $maxPrice]);
-                }
-
-
-                if ($request->has('minprice') && $request->has('maxprice')) {
-                    $minprice = $request->minprice ?? null;
-                    $maxprice = $request->maxprice ?? null;
-
-                    if (is_numeric($minprice) && is_numeric($maxprice)) {
-                        $productQuery->whereBetween('price', [$minprice, $maxprice]);
-                    } elseif (is_numeric($minprice)) {
-                        $productQuery->where('price', '>=', $minprice);
-                    } elseif (is_numeric($maxprice)) {
-                        $productQuery->where('price', '<=', $maxprice);
-                    }
-                }
-
+                $sortDirection = $request->input('sort_asc') ? 'asc' : 'desc';
+                $sortDirection = $request->input('sort_desc') ? 'desc' : 'asc';
+                $productQuery->orderBy('name',$sortDirection);
 
 
                 $filteredProducts = $productQuery->get();
@@ -318,25 +300,10 @@ class HomePageController extends Controller
                     'products' => $filteredProducts,
                 ]);
             }
-
-
         }
 
 
-        if ($request->has('minprice') && $request->has('maxprice')) {
-            $minprice = $request->minprice ?? null;
-            $maxprice = $request->maxprice ?? null;
-
-            if (is_numeric($minprice) && is_numeric($maxprice)) {
-                $productQuery->whereBetween('price', [$minprice, $maxprice]);
-            } elseif (is_numeric($minprice)) {
-                $productQuery->where('price', '>=', $minprice);
-            } elseif (is_numeric($maxprice)) {
-                $productQuery->where('price', '<=', $maxprice);
-            }
-        }
-
-        $products = $productQuery->paginate(5);
+        $products = $productQuery->get();
 
         $data['products'] = $products;
         return view('frontend.pages.shop', $data);
@@ -474,19 +441,19 @@ class HomePageController extends Controller
         $user_id = Auth::id();
         $session_id = request()->session()->get('_token');
 
-        $favorites = Favory::where(function($query) use ($user_id,$session_id){
+        $favorites = Favory::where(function ($query) use ($user_id, $session_id) {
             if ($user_id) {
-                $query->where('user_id',$user_id);
-            }else {
+                $query->where('user_id', $user_id);
+            } else {
                 $query->where('session_id', $session_id);
             }
         })
 
-        ->with([
-            'products' => function ($q) {
-                $q->select('id', 'name', 'price', 'images');
-            }
-        ])->get();
+            ->with([
+                'products' => function ($q) {
+                    $q->select('id', 'name', 'price', 'images');
+                }
+            ])->get();
 
 
 

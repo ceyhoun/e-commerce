@@ -68,7 +68,7 @@
                                 class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                                 <input type="checkbox" class="custom-control-input" checked id="color-all" name="color-all">
                                 <label class="custom-control-label" for="color-all">All Color</label>
-                                <span class="badge border font-weight-normal">{{$allTotalColor}}</span>
+                                <span class="badge border font-weight-normal">{{ $allTotalColor }}</span>
                             </div>
                             @foreach ($colors as $color)
                                 <div
@@ -77,7 +77,7 @@
                                         name="color[]" value="{{ $color->name }}">
                                     <label class="custom-control-label"
                                         for="color-{{ $color->id }}">{{ $color->name }}</label>
-                                    <span class="badge border font-weight-normal">{{$color->totalColor}}</span>
+                                    <span class="badge border font-weight-normal">{{ $color->totalColor }}</span>
                                 </div>
                             @endforeach
                         @endif
@@ -132,8 +132,10 @@
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle"
                                         data-toggle="dropdown">Ada Göre</button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#">A-Z</a>
-                                        <a class="dropdown-item" href="#">Z-A</a>
+                                        <a class="dropdown-item" id="dropdown-item1" href="javascript:void(0);"
+                                            role="button" tabindex="0" data-asc="asc">A-Z</a>
+                                        <a class="dropdown-item" id="dropdown-item2" href="javascript:void(0);"
+                                            role="button" tabindex="0" data-desc="desc">Z-A</a>
                                     </div>
                                 </div>
                                 <div class="btn-group">
@@ -148,13 +150,13 @@
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle"
                                         data-toggle="dropdown">Kateqoriyalara göre</button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        @if (! empty($subcategories) && $subcategories->count() > 0)
-                                        @foreach ($subcategories as $subcategory)
-                                        <a class="dropdown-item"
-                                            href="{{ route('shop', ['filtre' => $subcategory->slug]) }}">{{ $subcategory->name }}
-                                            ({{ $subcategory->products_count }})
-                                        </a>
-                                    @endforeach
+                                        @if (!empty($subcategories) && $subcategories->count() > 0)
+                                            @foreach ($subcategories as $subcategory)
+                                                <a class="dropdown-item"
+                                                    href="{{ route('shop', ['filtre' => $subcategory->slug]) }}">{{ $subcategory->name }}
+                                                    ({{ $subcategory->products_count }})
+                                                </a>
+                                            @endforeach
                                         @endif
 
                                     </div>
@@ -164,7 +166,6 @@
                     </div>
                     <div class="col-12 ">
                         <div class="row product-list">
-                            {{ $products->links() }}
                             @if (!empty($products) && $products->count() > 0)
                                 @foreach ($products as $product)
                                     <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
@@ -206,7 +207,7 @@
                 </div>
             </div>
             <div class="col-12 mb-3">
-                {{ $products->links() }}
+
             </div>
             @if (isset($products) && $products->count() > 1)
                 <div class="col-12">
@@ -236,12 +237,9 @@
         <script>
             $(document).ready(function() {
 
-
                 $('#filterForm input').change(function() {
                     applyFilterSize();
                 });
-
-
 
                 function applyFilterSize() {
                     var formSize = $('#filterForm').serialize();
@@ -259,7 +257,6 @@
                         }
                     });
                 }
-
 
                 function showSizelist(response) {
 
@@ -359,9 +356,117 @@
                         productColorList.insertAdjacentHTML('beforeend', productColorContent);
                     })
                 }
-                /////price
 
+                //order A-Z for name
+                $('#dropdown-item1').click(function(e) {
+                    e.preventDefault();
 
+                    let asc = $(this).data('asc');
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('shop') }}",
+                        data: {
+                            sort_asc: 'asc'
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            showOrderAsc(response);
+                        }
+
+                    });
+
+                    function showOrderAsc(response) {
+                        const ordersortasc = response.products;
+                        let ordersortproductlist = document.querySelector('.product-list');
+                        ordersortproductlist.innerHTML = "";
+
+                        ordersortasc.forEach((items) => {
+                            const productordersortasc = `
+                        <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                                <div class="product-item bg-light mb-4">
+                                    <div class="product-img position-relative overflow-hidden">
+                                        <img class="img-fluid w-100" src="${items.images}" alt="">
+                                        <div class="product-action">
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center py-4">
+                                        <a class="h6 text-decoration-none text-truncate" href="/detail/${items.slug}">${items.name}</a>
+                                        <div class="d-flex align-items-center justify-content-center mt-2">
+                                            <h5>${items.price} AZN (MANAT)</h5>
+                                            <h6 class="text-muted ml-2"><del>$9</del></h6>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center mb-1">
+                                            <small class="fa fa-star text-primary mr-1"></small>
+                                            <small>(90)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                            ordersortproductlist.insertAdjacentHTML('beforeend', productordersortasc);
+                        })
+                    }
+                });
+
+                //order Z-A for name
+
+                $('#dropdown-item2').click(function(e) {
+                    e.preventDefault();
+
+                    let desc = $(this).data('desc');
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ route('shop') }}",
+                        data: {
+                            sort_desc: 'desc'
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            showOrderDesc(response);
+                        }
+                    });
+
+                    function showOrderDesc(response) {
+                        const ordersortdesc = response.products;
+                        let ordersortdescproductlist = document.querySelector('.product-list');
+
+                        ordersortdescproductlist.innerHTML = "";
+
+                        ordersortdesc.forEach((items) => {
+                            const productordersortdesc = `  <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                                <div class="product-item bg-light mb-4">
+                                    <div class="product-img position-relative overflow-hidden">
+                                        <img class="img-fluid w-100" src="${items.images}" alt="">
+                                        <div class="product-action">
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center py-4">
+                                        <a class="h6 text-decoration-none text-truncate" href="/detail/${items.slug}">${items.name}</a>
+                                        <div class="d-flex align-items-center justify-content-center mt-2">
+                                            <h5>${items.price} AZN (MANAT)</h5>
+                                            <h6 class="text-muted ml-2"><del>$9</del></h6>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center mb-1">
+                                            <small class="fa fa-star text-primary mr-1"></small>
+                                            <small>(90)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                            ordersortdescproductlist.insertAdjacentHTML('beforeend',productordersortdesc);
+                        })
+                    }
+                });
             });
         </script>
     @endpush
