@@ -142,8 +142,10 @@
                                     <button type="button" class="btn btn-sm btn-light dropdown-toggle"
                                         data-toggle="dropdown">Qiymete Göre</button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" href="#">Artan</a>
-                                        <a class="dropdown-item" href="#">Azalan</a>
+                                        <a class="dropdown-item" href="javascript:void(0);" id="incremenet-data"
+                                            tabindex="0" role="button" data-incremenet="price-increment">Artan</a>
+                                        <a class="dropdown-item" href="javascripy:void(0);" id="decrement-data"
+                                            tabindex="0" role="button" data-decrement="price-decrement">Azalan</a>
                                     </div>
                                 </div>
                                 <div class="btn-group ml-2">
@@ -463,10 +465,135 @@
                                     </div>
                                 </div>
                             </div>`;
-                            ordersortdescproductlist.insertAdjacentHTML('beforeend',productordersortdesc);
+                            ordersortdescproductlist.insertAdjacentHTML('beforeend',
+                                productordersortdesc);
                         })
                     }
                 });
+
+                //order +1 for price
+                $('#incremenet-data').click(function(e) {
+                    e.preventDefault();
+                    $priceincremenet = $(this).data('price-increment');
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ 'shop' }}",
+                        data: {
+                            sort_price_increment: 'price-increment'
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            //console.log(response);
+                            showPriceMinToMax(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr, status, error);
+                        }
+                    });
+
+                    function showPriceMinToMax(data) {
+
+                        const productprice = data.products;
+                        let productpricelist = document.querySelector('.product-list');
+                        productpricelist.innerHTML = "";
+
+                        productprice.forEach((items) => {
+                            const productordermintomax = `
+                        <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                                <div class="product-item bg-light mb-4">
+                                    <div class="product-img position-relative overflow-hidden">
+                                        <img class="img-fluid w-100" src="${items.images}" alt="">
+                                        <div class="product-action">
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center py-4">
+                                        <a class="h6 text-decoration-none text-truncate" href="/detail/${items.slug}">${items.name}</a>
+                                        <div class="d-flex align-items-center justify-content-center mt-2">
+                                            <h5>${items.price} AZN (MANAT)</h5>
+                                            <h6 class="text-muted ml-2"><del>$9</del></h6>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center mb-1">
+                                            <small class="fa fa-star text-primary mr-1"></small>
+                                            <small>(90)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                            productpricelist.insertAdjacentHTML('beforeend', productordermintomax);
+
+                        })
+
+
+                    }
+                });
+
+                //order -1 for price
+
+                $('#decrement-data').click(function(e) {
+                    e.preventDefault();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ url('shop') }}", // URL'i doğru şekilde tanımlayın
+                        data: {
+                            sort_price_decrement: 'price-decrement',
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            showPriceMaxToMin(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr, status, error); // `error` değişkenini ekledik
+                        }
+                    });
+
+                    function showPriceMaxToMin(data) {
+                        const productpricem = data.products;
+                        let productpricelistm = document.querySelector('.product-list');
+                        productpricelistm.innerHTML = "";
+
+                        productpricem.forEach((items) => {
+                            const productorderm = `
+        <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+            <div class="product-item bg-light mb-4">
+                <div class="product-img position-relative overflow-hidden">
+                    <img class="img-fluid w-100" src="${items.images}" alt="">
+                    <div class="product-action">
+                        <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
+                        <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
+                    </div>
+                </div>
+                <div class="text-center py-4">
+                    <a class="h6 text-decoration-none text-truncate" href="/detail/${items.slug}">${items.name}</a>
+                    <div class="d-flex align-items-center justify-content-center mt-2">
+                        <h5>${items.price} AZN (MANAT)</h5>
+                        <h6 class="text-muted ml-2"><del>$9</del></h6>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center mb-1">
+                        <small class="fa fa-star text-primary mr-1"></small>
+                        <small>(90)</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+                            productpricelistm.insertAdjacentHTML('beforeend', productorderm);
+                        });
+                    }
+                });
+
+
+
+
+
             });
         </script>
     @endpush

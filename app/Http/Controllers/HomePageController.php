@@ -239,10 +239,9 @@ class HomePageController extends Controller
         $data['categories'] = $categories;
         $data['subcategories'] = $subcategories;
 
-        //
+        //Product query
 
         $productQuery = Product::query();
-
 
 
         if ($request->has('parent')) {
@@ -268,6 +267,7 @@ class HomePageController extends Controller
 
             if ($request->ajax()) {
 
+                //size
                 if ($request->has('size')) {
                     $size = $request->size ?? null;
 
@@ -278,6 +278,7 @@ class HomePageController extends Controller
                     });
                 }
 
+                //color
                 if ($request->has('color')) {
                     $color = $request->color ?? null;
 
@@ -288,10 +289,33 @@ class HomePageController extends Controller
                     });
                 }
 
+                //sort
+                if ($request->has('sort_asc')) {
+                    $sort_asc = $request->sort_asc ?? null;
 
-                $sortDirection = $request->input('sort_asc') ? 'asc' : 'desc';
-                $sortDirection = $request->input('sort_desc') ? 'desc' : 'asc';
-                $productQuery->orderBy('name',$sortDirection);
+                    $productQuery->orderBy('name', $sort_asc);
+
+                } elseif ($request->has('sort_desc')) {
+
+                    $sort_desc = $request->sort_desc ?? null;
+
+                    $productQuery->orderBy('name', $sort_desc);
+                }
+
+
+                if ($request->has('sort_price_increment')) {
+
+                    $price_asc ='asc';
+
+
+
+                    $productQuery->orderBy('price', $price_asc);
+
+                } elseif ($request->has('sort_price_decrement')) {
+                    $price_desc='desc';
+
+                    $productQuery->orderBy('price', $price_desc);
+                }
 
 
                 $filteredProducts = $productQuery->get();
@@ -299,9 +323,9 @@ class HomePageController extends Controller
                 return response()->json([
                     'products' => $filteredProducts,
                 ]);
+
             }
         }
-
 
         $products = $productQuery->get();
 
