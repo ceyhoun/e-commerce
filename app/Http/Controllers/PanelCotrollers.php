@@ -7,6 +7,8 @@ use App\Models\Color;
 use App\Models\Employee;
 use App\Models\Product;
 use App\Models\Referance;
+use App\Models\Shoe;
+use App\Models\Shoes;
 use App\Models\Shopping;
 use App\Models\Size;
 use App\Models\Subcategory;
@@ -68,7 +70,7 @@ class PanelCotrollers extends Controller
 
 
         //img
-        $imagename = time() . '.' . $request->categoryimage->extension();
+        $imagename = time() . '.' . $request->categoryimage->getClientOriginalExtension();
         $request->categoryimage->move(public_path('category_images'), $imagename);
         $file = "category_images/" . $imagename;
 
@@ -100,6 +102,10 @@ class PanelCotrollers extends Controller
         $colors = Color::all();
         $data['colors'] = $colors;
 
+        $shoes = Shoe::all();
+        $data['shoes'] = $shoes;
+
+
         $subcategories = Subcategory::where('status', '1')->get();
         $data['subcategories'] = $subcategories;
 
@@ -108,76 +114,101 @@ class PanelCotrollers extends Controller
 
     public function addproducts(Request $request)
     {
-        $name = $request->productname;
-        $subcategory = $request->subcategoryid;
+        $name = $request->input('productname');
+        $subcategory = $request->input('subcategoryid');
         $slug = Str::slug($name);
-        $price = $request->productprice;
-        $desctription = $request->productdesc;
+        $price = $request->input('productprice');
+        $description = $request->input('productdesc');
 
-        //img
+        // Görsel yükleme
         $image = null;
         if ($request->hasFile('productimg')) {
             $file = $request->file('productimg');
 
-            // Dosya türü kontrolü
+            // Dosya türü ve boyutu kontrolü
             $allowedExtensions = ['jpg', 'jpeg', 'png'];
             $extension = $file->getClientOriginalExtension();
+            $maxSize = 2097152; // 2MB
 
-            if ($file->isValid() && in_array($extension, $allowedExtensions)) {
+            if ($file->isValid() && in_array($extension, $allowedExtensions) && $file->getSize() <= $maxSize) {
                 $imageName = time() . '.' . $extension;
                 $file->move(public_path('product_images'), $imageName);
                 $image = "product_images/" . $imageName;
             } else {
-                // Dosya yükleme başarısız
                 return back()->withErrors(['error' => 'Geçersiz dosya formatı veya dosya boyutu çok büyük']);
             }
         }
 
+        $check = $request->input('productcheck') === 'on' ? '1' : '0';
 
-
-        $check = $request->productcheck === 'on' ? '1' : '0';
-
+        // Ürün oluşturma
         $product = Product::create([
             'name' => $name,
             'subcategory_id' => $subcategory,
             'slug' => $slug,
             'price' => $price,
-            'description' => $desctription,
+            'description' => $description,
             'images' => $image,
             'status' => $check,
         ]);
 
+        if (!$product) {
+            return back()->withErrors(['error' => 'Ürün eklenirken bir sorun oluştu.']);
+        }
 
-        if ($product) {
-            if ($request->has('productsize') && $request->has('productcolor') && $request->has('productqty')) {
-                $sizes = $request->productsize;
-                $colors = $request->productcolor;
-                $qtys = $request->productqty;
+        // Ürün varyasyonları ekleme
+        if ($request->has('productcolor') && $request->has('productqty')) {
+            $colors = $request->input('productcolor');
+            $qtys = $request->input('productqty');
+
+            if ($request->has('productsize')) {
+                $sizes = $request->input('productsize');
 
                 foreach ($sizes as $size_id) {
                     foreach ($colors as $color_id) {
                         if (isset($qtys[$size_id][$color_id])) {
                             $quantity = $qtys[$size_id][$color_id];
 
-                            DB::table('product_size_color')->insert(
-                                [
-                                    'product_id' => $product->id,
-                                    'size_id' => $size_id,
-                                    'color_id' => $color_id,
-                                    'qty' => $quantity,
-                                    'created_at' => now(),
-                                    'updated_at' => now(),
-                                ]
-                            );
+                            DB::table('product_size_color')->updateOrInsert([
+                                'product_id' => $product->id,
+                                'size_id' => $size_id,
+                                'color_id' => $color_id,
+                            ], [
+                                'qty' => $quantity,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        }
+                    }
+                }
+            } elseif ($request->has('productshoe')) {
+                $shoes = $request->input('productshoe');
+
+                foreach ($shoes as $shoe_id) {
+                    foreach ($colors as $color_id) {
+                        if (isset($qtys[$shoe_id][$color_id])) {
+                            $quantity = $qtys[$shoe_id][$color_id];
+
+                            DB::table('product_shoe_color')->updateOrInsert([
+                                'product_id' => $product->id,
+                                'shoe_id' => $shoe_id,
+                                'color_id' => $color_id,
+                            ], [
+                                'qty' => $quantity,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
                         }
                     }
                 }
             }
-
-
-            return redirect()->route('products');
         }
+
+        return redirect()->route('products');
     }
+
+
+
 
     public function subcategory()
     {
@@ -283,7 +314,16 @@ class PanelCotrollers extends Controller
 
     public function chars()
     {
-        return view('backend.section.charts.chartjs');
+        $chars =Subcategory::select('name',DB::raw('count(*) as totalcount'))
+        ->groupBy('name')
+        ->get();
+
+        $data=[
+            "chars" => $chars->pluck('name'),
+            "totalcount" =>$chars->pluck('totalcount'),
+        ];
+
+        return view('backend.section.charts.chartjs',$data);
     }
 
 

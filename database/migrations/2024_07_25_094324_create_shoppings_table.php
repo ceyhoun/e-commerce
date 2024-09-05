@@ -19,11 +19,13 @@ return new class extends Migration
             $table->bigInteger('product_qty')->default(1);
             $table->unsignedBigInteger('size_id')->nullable();
             $table->unsignedBigInteger('color_id')->nullable();
+            $table->unsignedBigInteger('shoe_id')->nullable();
             $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('size_id')->references('id')->on('sizes')->onDelete('set null');
+            $table->foreign('shoe_id')->references('id')->on('shoes')->onDelete('set null');
             $table->foreign('color_id')->references('id')->on('colors')->onDelete('set null');
         });
     }

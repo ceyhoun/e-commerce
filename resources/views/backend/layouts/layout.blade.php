@@ -81,5 +81,6 @@
 <script src="{{url('backend/dist/js/demo.js')}}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{url('backend/dist/js/pages/dashboard.js')}}"></script>
+@stack('scripts')
 </body>
 </html>

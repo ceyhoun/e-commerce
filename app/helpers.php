@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Favory;
+use App\Models\Product;
 use App\Models\Shopping;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,3 +41,4 @@ if (! function_exists('getFavoryController')) {
 
    }
 }
+

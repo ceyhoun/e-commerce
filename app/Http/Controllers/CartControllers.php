@@ -18,6 +18,7 @@ class CartControllers extends Controller
         $session_id = $request->session()->get('_token');
 
         $size_id = $request->input('size_id');
+        $shoe_id = $request->input('shoe_id');
         $color_id = $request->input('color_id');
         $cartqty = $request->input('cartqty');
 
@@ -29,12 +30,19 @@ class CartControllers extends Controller
         }
 
         //stoku idare et
-
-        $stockControl = DB::table('product_size_color')
-            ->where('product_id', $product_id)
-            ->where('size_id', $size_id)
-            ->where('color_id', $color_id)
-            ->first();
+        if ($size_id) {
+            $stockControl = DB::table('product_size_color')
+                ->where('product_id', $product_id)
+                ->where('size_id', $size_id)
+                ->where('color_id', $color_id)
+                ->first();
+        } else {
+            $stockControl = DB::table('product_shoe_color')
+                ->where('product_id', $product_id)
+                ->where('shoe_id', $shoe_id)
+                ->where('color_id', $color_id)
+                ->first();
+        }
 
         if (!$stockControl) {
             return redirect()->back()->with('error', 'Stock information has been selected for this calendar');
@@ -53,6 +61,7 @@ class CartControllers extends Controller
         })
             ->where('product_id', $product_id)
             ->where('size_id', $size_id)
+            ->where('shoe_id', $size_id)
             ->where('color_id', $color_id)
             ->first();
 
@@ -60,21 +69,34 @@ class CartControllers extends Controller
             $cart->product_qty += $cartqty;
             $cart->save();
         } else {
+            //sebeti yarad
             Shopping::create([
                 'user_id' => $user_id,
                 'session_id' => $session_id,
                 'product_id' => $product_id,
                 'product_qty' => $cartqty,
                 'size_id' => $size_id,
+                'shoe_id' => $shoe_id,
                 'color_id' => $color_id,
             ]);
         }
 
-        DB::table('product_size_color')
-            ->where('product_id', $product_id)
-            ->where('size_id', $size_id)
-            ->where('color_id', $color_id)
-            ->decrement('qty', $cartqty);
+        if ($size_id) {
+            DB::table('product_size_color')
+                ->where('product_id', $product_id)
+                ->where('size_id', $size_id)
+                ->where('color_id', $color_id)
+                ->decrement('qty', $cartqty);
+        }
+
+        if ($shoe_id) {
+            DB::table('product_shoe_color')
+                ->where('product_id', $product_id)
+                ->where('shoe_id', $shoe_id)
+                ->where('color_id', $color_id)
+                ->decrement('qty', $cartqty);
+        }
+
 
         return redirect()->back()->with('success', 'Uğurla Elave Olundu!...');
 
@@ -85,27 +107,46 @@ class CartControllers extends Controller
         $order = Shopping::find($id);
 
         if ($order) {
-            $product = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as total_qty'))
-                ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
-                ->where('products.id', $product_id)
-                ->groupBy('products.id')
-                ->where('status', 1)
-                ->first($product_id);
 
-            if ($product) {
+            $backqty = $order->product_qty;
 
-                $backqty = $order->product_qty;
+            // Ürün ve stok bilgilerini kontrol et
+            $productSizeColor = DB::table('product_size_color')
+                ->where('product_id', $product_id)
+                ->where('size_id', $order->size_id)
+                ->where('color_id', $order->color_id)
+                ->first();
 
+            $productShoeColor = DB::table('product_shoe_color')
+                ->where('product_id', $product_id)
+                ->where('shoe_id', $order->shoe_id)
+                ->where('color_id', $order->color_id)
+                ->first();
+
+
+            if ($productSizeColor) {
                 DB::table('product_size_color')
                     ->where('product_id', $product_id)
-                    ->where('size_id', $order->size_id) // Burada size_id ve color_id'nin de dahil edilmesi gerektiğini unutmayın
+                    ->where('size_id', $order->size_id)
                     ->where('color_id', $order->color_id)
-                    ->increment('qty',$backqty);
+                    ->increment('qty', $backqty);
 
-                $order->delete();
-
-                return redirect()->back()->with('success', 'Ürün sepetten silindi ve stok güncellendi.');
             }
+
+            if ($productShoeColor) {
+                DB::table('product_shoe_color')
+                    ->where('product_id', $product_id)
+                    ->where('shoe_id', $order->shoe_id)
+                    ->where('color_id', $order->color_id)
+                    ->increment('qty', $backqty);
+            }
+
+
+
+
+            $order->delete();
+
+            return redirect()->back()->with('success', 'Ürün sepetten silindi ve stok güncellendi.');
         }
 
         return redirect()->back()->with('error', 'Sipariş silinirken veya ürün güncellenirken bir hata oluştu.');

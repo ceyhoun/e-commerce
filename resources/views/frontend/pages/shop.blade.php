@@ -40,18 +40,7 @@
                             <label class="custom-control-label" for="price-3">$200 - $300</label>
                             <span class="badge border font-weight-normal">246</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-4" data-min="300"
-                                data-max="400">
-                            <label class="custom-control-label" for="price-4">$300 - $400</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="price-5" data-min="400"
-                                data-max="500">
-                            <label class="custom-control-label" for="price-5">$400 - $500</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
+
                     </form>
 
 
@@ -238,6 +227,46 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
+                //price
+                $('#filterPrice input').change(function() {
+                    applyFilterPrice();
+                });
+
+
+
+                function applyFilterPrice() {
+                    var filters = [];
+
+                    $('#filterPrice input:checked').each(function() {
+                        var min = $(this).data('min');
+                        var max = $(this).data('max');
+                        if (min !== undefined && max !== undefined) {
+                            filters.push('minprice=' + min + '&maxprice=' + max);
+                        }
+                    });
+
+                    var formprice = filters.join('&');
+
+                    console.log(formprice);
+
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ 'shop' }}",
+                        data: formPrice,
+                        dataType: "json",
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr, status, error);
+
+                        }
+                    });
+                }
+
+
+                //size
 
                 $('#filterForm input').change(function() {
                     applyFilterSize();
@@ -301,6 +330,8 @@
                 }
 
                 ///////////////////////
+
+                //color
 
                 $('#filterColor input').change(function() {
                     applyFilterColors();

@@ -25,6 +25,9 @@ class Product extends Model
         'status',
     ];
 
+
+
+
     public function sluggable(): array
     {
         return [
@@ -44,15 +47,24 @@ class Product extends Model
         return $this->belongsTo(Subcategory::class, 'subcategory_id');
     }
 
+    public function isShoe(): bool
+    {
+        return $this->subcategory && $this->subcategory->name === 'Ayaqqabı';
+    }
+
     public function sizes()
     {
         return $this->belongsToMany(Size::class,'product_size_color', 'product_id', 'size_id')->withPivot('qty');
     }
 
-
     public function colors()
     {
         return $this->belongsToMany(Color::class,'product_size_color', 'product_id', 'color_id')->withPivot('qty');
+    }
+
+    public function shoes()
+    {
+        return $this->belongsToMany(Shoe::class,'product_shoe_color', 'product_id', 'color_id')->withPivot('qty');
     }
 
     public function shopping()
@@ -64,4 +76,12 @@ class Product extends Model
     {
         return $this->hasMany(Favory::class,'product_id');
     }
+
+
+
+
+
 }
+
+
+

@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Size extends Model
+class Shoe extends Model
 {
     use HasFactory;
-    protected $fillable=[
-        'name',
-        'product_id',
+
+    protected $fillable =[
+        'number',
     ];
 
     public function products()
@@ -22,5 +22,4 @@ class Size extends Model
     {
         return $this->belongsToMany(Shopping::class);
     }
-
 }

@@ -1039,7 +1039,8 @@
     var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
 
     var areaChartData = {
-      labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels  :       @json($chars),
+
       datasets: [
         {
           label               : 'Digital Goods',
@@ -1050,7 +1051,7 @@
           pointStrokeColor    : 'rgba(60,141,188,1)',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [28, 48, 40, 19, 86, 27, 90]
+          data                : @json($totalcount)
         },
         {
           label               : 'Electronics',
@@ -1115,17 +1116,12 @@
     // Get context with jQuery - using jQuery's .get() method.
     var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
     var donutData        = {
-      labels: [
-          'Chrome',
-          'IE',
-          'FireFox',
-          'Safari',
-          'Opera',
-          'Navigator',
-      ],
+      labels:
+      @json($chars),
+
       datasets: [
         {
-          data: [700,500,400,600,300,100],
+          data: @json($totalcount),
           backgroundColor : ['red', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
         }
       ]

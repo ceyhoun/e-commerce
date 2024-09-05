@@ -15,6 +15,7 @@ class Shopping extends Model
         'product_id',
         'product_qty',
         'size_id',
+        'shoe_id',
         'color_id'
     ];
 
@@ -36,5 +37,10 @@ class Shopping extends Model
     public function sizes()
     {
         return $this->belongsTo(Size::class,'size_id');
+    }
+
+    public function shoes()
+    {
+        return $this->belongsTo(Shoe::class,'shoe_id');
     }
 }

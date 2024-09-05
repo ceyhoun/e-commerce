@@ -48,6 +48,7 @@ class HomePageController extends Controller
         $password = Hash::make($request->input('password'));
 
 
+
         $user = User::create([
             'name' => $name,
             'email' => $email,
@@ -83,7 +84,9 @@ class HomePageController extends Controller
 
     public function createlogin(Request $request)
     {
-        $user = Auth::attempt(['email' => $request->email, 'password' => $request->password]);
+        $remember = $request->has('remember') ? true : false;
+
+        $user = Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember);
 
 
         if ($user) {
@@ -169,11 +172,54 @@ class HomePageController extends Controller
             return redirect()->back();
         }
 
-        $singleProduct = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as productstock'))
-            ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
+        $singleProduct = Product::select('products.*')
+            ->leftJoin('product_size_color', 'products.id', '=', 'product_size_color.product_id')
+            ->leftJoin('product_shoe_color', 'products.id', '=', 'product_shoe_color.product_id')
+            ->select(
+                'products.*',
+                DB::raw('COALESCE(SUM(product_size_color.qty), 0) as size_stock'),
+                DB::raw('COALESCE(SUM(product_shoe_color.qty), 0) as shoe_stock')
+            )
             ->groupBy('products.id')
+            ->where('products.slug', $slug)
+            ->with('sizes', 'shoes', 'colors:id,name')
+            ->first();
+
+
+        $singleProduct = Product::with(['sizes', 'shoes', 'colors:id,name'])
             ->where('slug', $slug)
             ->first();
+
+        $sizeStock = DB::table('product_size_color')
+            ->where('product_id', $singleProduct->id)
+            ->sum('qty');
+
+        $shoeStock = DB::table('product_shoe_color')
+            ->where('product_id', $singleProduct->id)
+            ->sum('qty');
+
+
+        $singleProduct->size_stock = $sizeStock;
+        $singleProduct->shoe_stock = $shoeStock;
+
+        $shoeColors = DB::table('product_shoe_color')
+            ->join('colors', 'product_shoe_color.color_id', '=', 'colors.id')
+            ->where('product_shoe_color.product_id', $singleProduct->id)
+            ->select('colors.id', 'colors.name')
+            ->distinct()
+            ->get();
+
+        $sizeColors = DB::table('product_size_color')
+            ->join('colors', 'product_size_color.color_id', '=', 'colors.id')
+            ->where('product_size_color.product_id', $singleProduct->id)
+            ->select('colors.id', 'colors.name')
+            ->distinct()
+            ->get();
+
+        $singleProduct->shoe_colors = $shoeColors;
+        $singleProduct->size_colors = $sizeColors;
+
+
         if (!$singleProduct) {
             return redirect()->back();
         }
@@ -226,6 +272,8 @@ class HomePageController extends Controller
             ->groupBy('colors.id')
             ->get();
         ;
+
+
 
         $favcount = getFavoryController();
         $data['favcount'] = $favcount;
@@ -305,18 +353,19 @@ class HomePageController extends Controller
 
                 if ($request->has('sort_price_increment')) {
 
-                    $price_asc ='asc';
-
-
+                    $price_asc = 'asc';
 
                     $productQuery->orderBy('price', $price_asc);
 
                 } elseif ($request->has('sort_price_decrement')) {
-                    $price_desc='desc';
+                    $price_desc = 'desc';
 
                     $productQuery->orderBy('price', $price_desc);
                 }
 
+
+
+                //all get()
 
                 $filteredProducts = $productQuery->get();
 
