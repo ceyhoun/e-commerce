@@ -134,18 +134,20 @@ class HomePageController extends Controller
 
 
 
-        $products = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as total_qty'))
-            ->join('product_size_color', 'products.id', '=', 'product_size_color.product_id')
+         $products = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as total_qty')
+        ,DB::raw('COALESCE(SUM(product_shoe_color.QTY)) as number_qty'))
+            ->leftJoin('product_size_color', 'products.id', '=', 'product_size_color.product_id')
+            ->leftJoin('product_shoe_color', 'products.id', '=', 'product_shoe_color.product_id')
             ->where('products.status', '1')
             ->groupBy('products.id')
             ->with([
                 'sizes' => function ($query) {
-                    $query->select('sizes.name');
+                    $query->select('id','name');
                 }
             ])
             ->with([
                 'colors' => function ($query) {
-                    $query->select('colors.name');
+                    $query->select('id','name');
                 }
             ])
             ->get();
@@ -155,7 +157,7 @@ class HomePageController extends Controller
         $data['shops'] = $shops;
         $data['products'] = $products;
         $data['categories'] = $categories;
-        $productsDesc = Product::whereStatus('1')->orderBy('created_at', 'asc')->limit(3)->get();
+        $productsDesc = Product::whereStatus('1')->orderBy('created_at', 'asc')->limit(2)->get();
         $data['productsDesc'] = $productsDesc;
 
 
@@ -363,11 +365,23 @@ class HomePageController extends Controller
                     $productQuery->orderBy('price', $price_desc);
                 }
 
+                //min&max price
+
+                $minPrice =$request->input('minprice');
+                $maxPrice =$request->input('maxprice');
+
+                if (! is_null($minPrice) && ! is_null($maxPrice)) {
+                   $productQuery->whereBetween('price',[$minPrice,$maxPrice]);
+                }elseif (! is_null($minPrice)) {
+                    $productQuery->where('price','>=',$minPrice);
+                }elseif (! is_null($maxPrice)) {
+                    $productQuery->where('price','<=',$minPrice);
+                }
 
 
                 //all get()
 
-                $filteredProducts = $productQuery->get();
+                $filteredProducts = $productQuery->paginate(3);
 
                 return response()->json([
                     'products' => $filteredProducts,
@@ -376,7 +390,7 @@ class HomePageController extends Controller
             }
         }
 
-        $products = $productQuery->get();
+        $products = $productQuery->paginate(3);
 
         $data['products'] = $products;
         return view('frontend.pages.shop', $data);

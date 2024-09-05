@@ -145,8 +145,12 @@
                                 </a>
                                 <a class="btn btn-outline-dark btn-square btn-fav" data-item-id="{{ $product->id }}"><i
                                         class="far fa-heart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i
-                                        class="fa fa-sync-alt"></i></a>
+                                        <a class="btn btn-outline-dark btn-square" href="">
+                                            <svg class="icon" xmlns="http://www.w3.org/2000/svg"  width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M10.08,7l1,1,3.44-3.45L11,1,10,2l1.8,1.8H2v1.4h9.82ZM5.86,9l-1-1L1.42,11.5,4.91,15l1-1L4.1,12.2H14V10.8H4.1Z"></path>
+                                            </svg>
+                                        </a>
+
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-search"></i></a>
                             </div>
@@ -213,7 +217,7 @@
                             <div class="product-action">
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square" href=""><i
+                                <a class="btn btn-outline-dark btn-square btn-fav" data-item-id="{{ $product->id }}" href=""><i
                                         class="far fa-heart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-sync-alt"></i></a>
@@ -299,7 +303,7 @@
                             })
                         } else {
                             Swal.fire({
-                                title:'success',
+                                title:'error',
                                 text: 'favda',
                                 icon: 'error',
                             })
