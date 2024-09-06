@@ -353,6 +353,7 @@ class HomePageController extends Controller
                 }
 
 
+
                 if ($request->has('sort_price_increment')) {
 
                     $price_asc = 'asc';
@@ -381,7 +382,7 @@ class HomePageController extends Controller
 
                 //all get()
 
-                $filteredProducts = $productQuery->paginate(3);
+                $filteredProducts = $productQuery->get();
 
                 return response()->json([
                     'products' => $filteredProducts,
@@ -390,7 +391,7 @@ class HomePageController extends Controller
             }
         }
 
-        $products = $productQuery->paginate(3);
+        $products = $productQuery->get();
 
         $data['products'] = $products;
         return view('frontend.pages.shop', $data);

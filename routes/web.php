@@ -78,3 +78,4 @@ Route::delete('/cart/item/{id}/{product_id}', [CartControllers::class, 'itemDele
 //favory
 Route::post('fav/addfav/{product_id}',[FavoryControllers::class,'addFavory'])->name('addfavory');
 
+
