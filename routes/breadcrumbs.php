@@ -13,13 +13,15 @@ Breadcrumbs::for('shop', function (BreadcrumbTrail $trail) {
     $trail->push('Shop', route('shop'));
 });
 
-// Mağaza Listesi
+// Mağaza çalışanlar
 Breadcrumbs::for('employee', function(BreadcrumbTrail $trail){
     $trail->parent('home');
     $trail->push('Employee',route('employee'));
 });
 
+// Mağaza favoriler
 Breadcrumbs::for('favory', function(BreadcrumbTrail $trail){
     $trail->parent('home');
     $trail->push('Favory', route('favory'));
 });
+

@@ -26,21 +26,8 @@
                             <input type="checkbox" class="custom-control-input" id="price-1" data-min="0"
                                 data-max="100">
                             <label class="custom-control-label" for="price-1">$0 - $100</label>
-                            <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-2" data-min="100"
-                                data-max="200">
-                            <label class="custom-control-label" for="price-2">$100 - $200</label>
                             <span class="badge border font-weight-normal">295</span>
                         </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-3" data-min="200"
-                                data-max="300">
-                            <label class="custom-control-label" for="price-3">$200 - $300</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-
                     </form>
 
 
@@ -113,8 +100,10 @@
                     <div class="col-12 pb-1">
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <div>
-                                <button class="btn btn-sm btn-light" id="table-grid" data-grid="grid"><i class="fa fa-th-large"></i></button>
-                                <button class="btn btn-sm btn-light ml-2" id="table-block" data-block="block"><i class="fa fa-bars"></i></button>
+                                <button class="btn btn-sm btn-light" id="table-grid" data-grid="grid"><i
+                                        class="fa fa-th-large"></i></button>
+                                <button class="btn btn-sm btn-light ml-2" id="table-block" data-block="block"><i
+                                        class="fa fa-bars"></i></button>
                             </div>
                             <div class="ml-2">
                                 <div class="btn-group">
@@ -245,7 +234,7 @@
 
                     $.ajax({
                         type: "GET",
-                        url:  "{{'shop'}}",
+                        url: "{{ 'shop' }}",
                         data: formprice,
                         dataType: "json",
                         success: function(response) {
@@ -653,33 +642,33 @@
                     }
                 });
                 //////////////////////
-                $('#table-block').click(function (e) {
+                $('#table-block').click(function(e) {
                     e.preventDefault();
 
-                    let table_block =$(this).data('block');
+                    let table_block = $(this).data('block');
 
                     $.ajax({
                         type: "GET",
-                        url: "{{'shop'}}",
+                        url: "{{ 'shop' }}",
                         data: {
-                            table_block:'table_block'
+                            table_block: 'table_block'
                         },
                         dataType: "json",
-                        success: function (response) {
+                        success: function(response) {
                             dataBlockList(response)
                         },
-                        error: function(xhr,status,error){
-                            console.log(xhr,status,error);
+                        error: function(xhr, status, error) {
+                            console.log(xhr, status, error);
                         }
                     });
 
                     function dataBlockList(response) {
-                        const blockData =response.products;
-                        let blockDataList =document.querySelector('.product-list');
-                        blockDataList.innerHTML ="";
+                        const blockData = response.products;
+                        let blockDataList = document.querySelector('.product-list');
+                        blockDataList.innerHTML = "";
 
-                        blockData.map((item)=>{
-                            const blockDataContent =`
+                        blockData.map((item) => {
+                            const blockDataContent = `
                             <div class="container">
                             <div class="d-block">
                                 <div class="product-item bg-light mb-4">
@@ -707,8 +696,65 @@
                             </div>
                             </div>
                             `;
-                            blockDataList.insertAdjacentHTML('beforeend',blockDataContent);
+                            blockDataList.insertAdjacentHTML('beforeend', blockDataContent);
 
+                        })
+                    }
+                });
+
+                $('#table-grid').click(function(e) {
+                    e.preventDefault();
+
+                    let table_grid = $(this).data('grid');
+
+                    $.ajax({
+                        type: "GET",
+                        url: "{{ 'shop' }}",
+                        data: {
+                            table_grid: 'table_grid'
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            dataGridList(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.log(xhr, status, error);
+                        }
+                    });
+
+                    function dataGridList(response) {
+                        const gridData = response.products;
+                        let gridDataList = document.querySelector('.product-list');
+                        gridDataList.innerHTML = "";
+
+                        gridData.forEach((item) => {
+                            const gridDataContent = `
+                                <div class="col-lg-4 col-md-6 col-sm-6 pb-1">
+                                <div class="product-item bg-light mb-4">
+                                    <div class="product-img position-relative overflow-hidden">
+                                        <img class="img-fluid w-100" src="${item.images}" alt="">
+                                        <div class="product-action">
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-shopping-cart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="far fa-heart"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-sync-alt"></i></a>
+                                            <a class="btn btn-outline-dark btn-square" href="#"><i class="fa fa-search"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center py-4">
+                                        <a class="h6 text-decoration-none text-truncate" href="/detail/${item.slug}">${item.name}</a>
+                                        <div class="d-flex align-items-center justify-content-center mt-2">
+                                            <h5>$${item.price} AZN (MANAT)</h5>
+                                            <h6 class="text-muted ml-2"><del>$9</del></h6>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center mb-1">
+                                            <small class="fa fa-star text-primary mr-1"></small>
+                                            <small>(90)</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                            gridDataList.insertAdjacentHTML('beforeend', gridDataContent);
                         })
                     }
                 });

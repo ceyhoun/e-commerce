@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Comments;
 use App\Models\Contact;
 use App\Models\Employee;
 use App\Models\Favory;
@@ -21,6 +22,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Stmt\Return_;
+
+use function PHPUnit\Framework\isEmpty;
 
 class HomePageController extends Controller
 {
@@ -134,20 +137,24 @@ class HomePageController extends Controller
 
 
 
-         $products = Product::select('products.*', DB::raw('COALESCE(SUM(product_size_color.qty)) as total_qty')
-        ,DB::raw('COALESCE(SUM(product_shoe_color.QTY)) as number_qty'))
+        $products = Product::select(
+            'products.*',
+            DB::raw('COALESCE(SUM(product_size_color.qty)) as total_qty')
+            ,
+            DB::raw('COALESCE(SUM(product_shoe_color.QTY)) as number_qty')
+        )
             ->leftJoin('product_size_color', 'products.id', '=', 'product_size_color.product_id')
             ->leftJoin('product_shoe_color', 'products.id', '=', 'product_shoe_color.product_id')
             ->where('products.status', '1')
             ->groupBy('products.id')
             ->with([
                 'sizes' => function ($query) {
-                    $query->select('id','name');
+                    $query->select('id', 'name');
                 }
             ])
             ->with([
                 'colors' => function ($query) {
-                    $query->select('id','name');
+                    $query->select('id', 'name');
                 }
             ])
             ->get();
@@ -253,6 +260,14 @@ class HomePageController extends Controller
 
         $data['likeProducts'] = $likeProducts;
 
+        //comments and ratin
+        $userId = Auth::id();
+        $userComment = User::with('comments')->find($userId);
+
+        $data['userComment']=$userComment;
+
+
+
 
         return view('frontend.pages.detail', $data);
     }
@@ -273,7 +288,6 @@ class HomePageController extends Controller
             ->join('product_size_color', 'colors.id', '=', 'product_size_color.color_id')
             ->groupBy('colors.id')
             ->get();
-        ;
 
 
 
@@ -368,17 +382,17 @@ class HomePageController extends Controller
 
                 //min&max price
 
-                $minPrice =$request->input('minprice');
-                $maxPrice =$request->input('maxprice');
 
-                if (! is_null($minPrice) && ! is_null($maxPrice)) {
-                   $productQuery->whereBetween('price',[$minPrice,$maxPrice]);
-                }elseif (! is_null($minPrice)) {
-                    $productQuery->where('price','>=',$minPrice);
-                }elseif (! is_null($maxPrice)) {
-                    $productQuery->where('price','<=',$minPrice);
+                $minPrice = $request->input('minprice');
+                $maxPrice = $request->input('maxprice');
+
+                if (!is_null($minPrice) && !is_null($maxPrice)) {
+                    $productQuery->whereBetween('price', [$minPrice, $maxPrice]);
+                } elseif (!is_null($minPrice)) {
+                    $productQuery->where('price', '>=', $minPrice);
+                } elseif (!is_null($maxPrice)) {
+                    $productQuery->where('price', '<=', $minPrice);
                 }
-
 
                 //all get()
 
@@ -390,6 +404,8 @@ class HomePageController extends Controller
 
             }
         }
+
+
 
         $products = $productQuery->get();
 
@@ -571,6 +587,96 @@ class HomePageController extends Controller
 
         return view('frontend.pages.employee', $data);
     }
+
+    public function search(Request $request)
+    {
+
+        $shops = getAuthController();
+
+        $data['shops'] = $shops;
+        $categories = Category::all();
+        $data['categories'] = $categories;
+        $favcount = getFavoryController();
+        $data['favcount'] = $favcount;
+
+
+        if ($request->has('search')) {
+
+            $searchResult = $request->search;
+
+            if (empty($searchResult)) {
+                $data['message'] = 'Arama için değer girmediniz';
+            } else {
+                $products = Product::where('name', 'like', "%{$searchResult}%")->get();
+
+                if ($products->isEmpty()) {
+                    $data['message'] = 'Bele bir Mehsul yoxdur';
+                } else {
+                    $data['products'] = $products;
+                }
+            }
+
+        }
+
+        return view('frontend.pages.search', $data);
+
+
+    }
+
+
+    public function comments(Request $request, $product_id)
+    {
+        $product = Product::find($product_id);
+
+        $user_id = Auth::id();
+        $session_id = $request->session()->getId();
+        $message = $request->input('message');
+        $name = $request->input('name');
+        $email = $request->input('email');
+        $rating = $request->input('rating');
+
+
+
+        $comments = Comments::where(function ($query) use ($user_id, $session_id) {
+            if ($user_id) {
+                $query->where('user_id', $user_id);
+            } else {
+                $query->where('session_id', $session_id);
+            }
+        })
+            ->where('product_id', $product->id)
+            ->where('message', $message)
+            ->where('name', $name)
+            ->where('mail', $email)
+            ->where('rating', $rating)
+            ->first();
+
+        if ($comments) {
+            return;
+        } else {
+            $setComment = Comments::create([
+                'user_id' => $user_id,
+                'session_id' => $session_id,
+                'product_id' => $product->id,
+                'message' => $message,
+                'name' => $name,
+                'mail' => $email,
+                'rating' => $rating
+            ]);
+        }
+
+
+
+
+        if ($setComment) {
+            return redirect()->route('detail', $product->slug)->with('success', 'Eklendi');
+        }
+
+
+    }
+
+
+
 
 
 

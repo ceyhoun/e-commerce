@@ -4,7 +4,6 @@
             <div class="col-12">
                 <nav class="breadcrumb bg-light mb-30">
                     <a class="breadcrumb-item text-dark" href="/">Home</a>
-
                     @if (Request::is('shop'))
                     <a class="breadcrumb-item text-dark" href="{{ route('shop') }}">Shop</a>
                     <span class="breadcrumb-item active">Shop List</span>
@@ -17,9 +16,15 @@
                     @elseif (Request::is('favory'))
                     <a class="breadcrumb-item text-dark" href="{{ route('favory') }}">Favory</a>
                         <span class="breadcrumb-item active">Favory List</span>
-                        @elseif (Request::is('contact'))
+                    @elseif (Request::is('contact'))
                     <a class="breadcrumb-item text-dark" href="{{ route('contact') }}">Contact</a>
                         <span class="breadcrumb-item active">Contact List</span>
+                    @elseif (Request::is('detail/*'))
+                    <a class="breadcrumb-item text-dark" href="{{ route('detail') }}">Detail</a>
+                        <span class="breadcrumb-item active">Detail List</span>
+                    @elseif (Request::is('search'))
+                    <a class="breadcrumb-item text-dark" href="{{ route('search') }}">Search</a>
+                    <span class="breadcrumb-item active">Search List</span>
                     @endif
                 </nav>
             </div>

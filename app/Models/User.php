@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Favory::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comments::class,'user_id');
+    }
 }

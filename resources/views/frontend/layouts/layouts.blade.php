@@ -27,17 +27,51 @@
     <!-- Libraries Stylesheet -->
     <link href="{{ url('lib/animate/animate.min.css') }}" rel="stylesheet">
     <link href="{{ url('lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.4/svg.min.js" integrity="sha512-ovlWyhrYXr3HEkGJI5YPXIFYIbHEKs2yfemKVVIIQe9U74tXyTuVdzMlvZlw/0X5lnIDRgtVlckrkeuCrDpq4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/3.2.4/svg.min.js"
+        integrity="sha512-ovlWyhrYXr3HEkGJI5YPXIFYIbHEKs2yfemKVVIIQe9U74tXyTuVdzMlvZlw/0X5lnIDRgtVlckrkeuCrDpq4Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!-- Bootstrap CSS -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- Bootstrap JS (Opsiyonel) -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS (Opsiyonel) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ url('css/style.css') }}" rel="stylesheet">
+    <style>
+ .star-rating {
+    display: inline-flex;
+    direction: rtl; /* Sağdan sola sıralama */
+    font-size: 2rem;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    color: #d3d3d3; /* Varsayılan gri renk */
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.star-rating input[type="radio"]:checked ~ label {
+    color: #f5c518; /* Seçili yıldızlar için sarı renk */
+}
+
+.star-rating input[type="radio"]:checked ~ label ~ label {
+    color: #f5c518; /* Seçili yıldız ve sağındaki yıldızlar sarı olacak */
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #f5c518; /* Hover durumunda yıldızlar sarı olur */
+}
+
+
+    </style>
 </head>
 
 <body>
@@ -57,7 +91,6 @@
 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-
     <script src="{{ url('lib/easing/easing.min.js') }}"></script>
     <script src="{{ url('lib/owlcarousel/owl.carousel.min.js') }}"></script>
 

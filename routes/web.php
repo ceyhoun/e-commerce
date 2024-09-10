@@ -4,6 +4,7 @@ use App\Http\Controllers\CartControllers;
 use App\Http\Controllers\FavoryControllers;
 use App\Http\Controllers\HomePageController;
 use App\Http\Controllers\PanelCotrollers;
+use App\Http\Controllers\RatingControllers;
 use Illuminate\Support\Facades\Route;
 
 
@@ -62,20 +63,18 @@ Route::get('/error', [HomePageController::class, 'error'])->name('error');
 Route::post('/sent/messages',[HomePageController::class,'messages'])->name('messages');
 Route::get('/favory',[HomePageController::class,'favory'])->name('favory');
 Route::get('/employee',[HomePageController::class,'employee'])->name('employee');
-
-
 //chars
 Route::get('admin/chars', [PanelCotrollers::class, 'chars'])->name('chars');
-
 //cart
-
 Route::get('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->name('additemget');
 Route::post('cart/additem/{productId}', [CartControllers::class, 'addToCart'])->name('additem');
-
 //cartdelete
 Route::delete('/cart/item/{id}/{product_id}', [CartControllers::class, 'itemDelete'])->name('itemDelete');
-
 //favory
 Route::post('fav/addfav/{product_id}',[FavoryControllers::class,'addFavory'])->name('addfavory');
+Route::get('search',[HomePageController::class,'search'])->name('search');
+//comm and rat
+Route::post('/comment/newcomment/{product_id}',[HomePageController::class,'comments'])->name('comment');
+Route::get('/comment/{user_id}',[HomePageController::class,'showUserComments'])->name('showcomment');
 
 

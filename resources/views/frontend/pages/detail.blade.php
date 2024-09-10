@@ -152,36 +152,36 @@
                                             </button>
                                         </div>
                                     </div>
-                            @else
-                                <div class="d-flex align-items-center mb-4 pt-2">
-                                    @php
-                                        $totalStock = $singleProduct->size_stock;
-                                        $min = $totalStock < 1 ? 'disabled' : '';
-                                    @endphp
-                                    <div class="input-group quantity mr-3" style="width: 130px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-primary btn-minus" id="qtyBtnMinus" type="button"
-                                                {{ $min }}>
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
+                                @else
+                                    <div class="d-flex align-items-center mb-4 pt-2">
+                                        @php
+                                            $totalStock = $singleProduct->size_stock;
+                                            $min = $totalStock < 1 ? 'disabled' : '';
+                                        @endphp
+                                        <div class="input-group quantity mr-3" style="width: 130px;">
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-primary btn-minus" id="qtyBtnMinus" type="button"
+                                                    {{ $min }}>
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
 
-                                        <input type="number" id="qtyInput" name="cartqty" min="1"
-                                            max="{{ $totalStock }}"
-                                            class="form-control bg-secondary border-0 text-center" value="1"
-                                            {{ $min }}>
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-primary btn-plus" id="qtyBtnPlus" type="button"
+                                            <input type="number" id="qtyInput" name="cartqty" min="1"
+                                                max="{{ $totalStock }}"
+                                                class="form-control bg-secondary border-0 text-center" value="1"
                                                 {{ $min }}>
-                                                <i class="fa fa-plus"></i>
-                                            </button>
+                                            <div class="input-group-btn">
+                                                <button class="btn btn-primary btn-plus" id="qtyBtnPlus" type="button"
+                                                    {{ $min }}>
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
                             @endif
 
-                                <button class="btn btn-primary px-3" type="submit">
-                                    <i class="fa fa-shopping-cart mr-1"></i>
-                                    Səbətə Əlavə Et</button>
+                            <button class="btn btn-primary px-3" type="submit">
+                                <i class="fa fa-shopping-cart mr-1"></i>
+                                Səbətə Əlavə Et</button>
                         </form>
                     </div>
                     <div class="d-flex pt-2">
@@ -210,115 +210,72 @@
         <div class="col">
             <div class="bg-light p-30">
                 <div class="nav nav-tabs mb-4">
-                    <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Description</a>
-                    <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-2">Information</a>
-                    <a class="nav-item nav-link text-dark" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
+                    <a class="nav-item nav-link text-dark active" data-toggle="tab" href="#tab-pane-1">Reviews (0)</a>
+                    <a class="nav-item nav-link text-dark " data-toggle="tab" href="#tab-pane-2">Description</a>
                 </div>
+
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="tab-pane-1">
+                    <div class="tab-pane fade  " id="tab-pane-2">
                         <h4 class="mb-3">Product Description</h4>
-                        <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam
-                            invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod
-                            consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam.
-                            Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos
-                            dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod
-                            nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt
-                            tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
-                        <p>Dolore magna est eirmod sanctus dolor, amet diam et eirmod et ipsum. Amet dolore tempor
-                            consetetur sed lorem dolor sit lorem tempor. Gubergren amet amet labore sadipscing clita
-                            clita diam clita. Sea amet et sed ipsum lorem elitr et, amet et labore voluptua sit rebum.
-                            Ea erat sed et diam takimata sed justo. Magna takimata justo et amet magna et.</p>
                     </div>
-                    <div class="tab-pane fade" id="tab-pane-2">
-                        <h4 class="mb-3">Additional Information</h4>
-                        <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam
-                            invidunt duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod
-                            consetetur invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam.
-                            Dolore diam stet rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos
-                            dolores sit no ut diam consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod
-                            nonumy rebum dolor accusam, ipsum kasd eos consetetur at sit rebum, diam kasd invidunt
-                            tempor lorem, ipsum lorem elitr sanctus eirmod takimata dolor ea invidunt.</p>
+                    <div class="tab-pane fade show active" id="tab-pane-1">
                         <div class="row">
                             <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="tab-pane-3">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h4 class="mb-4">1 review for "Product Name"</h4>
-                                <div class="media mb-4">
-                                    <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1"
-                                        style="width: 45px;">
-                                    <div class="media-body">
-                                        <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
-                                        <div class="text-primary mb-2">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <i class="far fa-star"></i>
+                                @forelse($userComment->comments as $comment)
+                                    <h4 class="mb-4">{{ $comment->product->name }} - {{ $comment->created_at->format('d M Y') }}</h4>
+                                    <div class="media mb-4">
+                                        <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                        <div class="media-body">
+                                            <h6>{{ $userComment->name }}<small> - <i>{{ $comment->created_at->format('d M Y') }}</i></small></h6>
+                                            <div class="text-primary mb-2">
+                                                @for ($i = 0; $i < 5; $i++)
+                                                    @if ($i < $comment->rating)
+                                                        <i class="fas fa-star"></i>
+                                                    @else
+                                                        <i class="far fa-star"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                            <p>{{ $comment->message }}</p>
                                         </div>
-                                        <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum
-                                            et no at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
                                     </div>
-                                </div>
+                                @empty
+                                    <p>Henüz yorum yapılmamış.</p>
+                                @endforelse
                             </div>
+
+
+
                             <div class="col-md-6">
                                 <h4 class="mb-4">Leave a review</h4>
                                 <small>Your email address will not be published. Required fields are marked *</small>
-                                <div class="d-flex my-3">
-                                    <p class="mb-0 mr-2">Your Rating * :</p>
-                                    <div class="text-primary">
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
+                                <form method="POST" action="{{route('comment',$singleProduct->id)}}">
+                                    @csrf
+                                    <div class="d-flex my-3">
+                                        <p class="mb-0 mr-2">Your Rating * :</p>
+                                        <div class="star-rating">
+                                            <div class="star-rating">
+                                                @for($i = 5; $i >= 1; $i--)
+                                                    <input type="radio" id="star-{{ $i }}" name="rating" value="{{ $i }}">
+                                                    <label for="star-{{ $i }}">&#9733;</label>
+                                                @endfor
+                                            </div>
+
+                                        </div>
+
                                     </div>
-                                </div>
-                                <form>
+
                                     <div class="form-group">
-                                        <label for="message">Your Review *</label>
-                                        <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
+                                        <label for="messageid">Your Review *</label>
+                                        <textarea id="messageid" cols="30" rows="5" name="message" class="form-control"></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label for="name">Your Name *</label>
-                                        <input type="text" class="form-control" id="name">
+                                        <label for="nameid">Your Name *</label>
+                                        <input type="text" class="form-control" name="name" id="nameid">
                                     </div>
                                     <div class="form-group">
-                                        <label for="email">Your Email *</label>
-                                        <input type="email" class="form-control" id="email">
+                                        <label for="emailid">Your Email *</label>
+                                        <input type="text" class="form-control" name="email" id="emailid">
                                     </div>
                                     <div class="form-group mb-0">
                                         <input type="submit" value="Leave Your Review" class="btn btn-primary px-3">
@@ -365,11 +322,8 @@
                                     </div>
                                     <div class="d-flex align-items-center justify-content-center mb-1">
                                         <small class="fa fa-star text-primary mr-1"></small>
-                                        <small class="fa fa-star text-primary mr-1"></small>
-                                        <small class="fa fa-star text-primary mr-1"></small>
-                                        <small class="fa fa-star text-primary mr-1"></small>
-                                        <small class="fa fa-star text-primary mr-1"></small>
-                                        <small>(99)</small>
+
+                                        <small>(949)</small>
                                     </div>
                                 </div>
                             </div>
