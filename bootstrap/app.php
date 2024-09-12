@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminCheck;
+use App\Http\Middleware\LocaleMiddleware;
 use App\Http\Middleware\ShareNavbar;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'check' => AdminCheck::class,
             'navbar' => ShareNavbar::class,
+        ]);
+
+        $middleware->web(append:[
+            App\Http\Middleware\LocaleMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

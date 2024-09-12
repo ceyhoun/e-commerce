@@ -28,7 +28,7 @@
                 </a>
             </div>
             <div class="col-lg-4 col-6 text-left">
-                <form action="{{route('search')}}" method="GET">
+                <form action="{{ route('search') }}" method="GET">
                     <div class="input-group">
                         <input type="text" class="form-control" name="search" placeholder="Search for products">
                         <div class="input-group-append">
@@ -51,11 +51,15 @@
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                        data-toggle="dropdown">EN</button>
+                        data-toggle="dropdown">Language</button>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <button class="dropdown-item" type="button">FR</button>
-                        <button class="dropdown-item" type="button">AR</button>
-                        <button class="dropdown-item" type="button">RU</button>
+                        <a href="locale/en" class="dropdown-item">EN</a>
+                        <a href="locale/fr" class="dropdown-item">FR</a>
+                        <a href="locale/tr" class="dropdown-item">TR</a>
+                        <a href="locale/ar" class="dropdown-item">AR</a>
+
+
+
                     </div>
                 </div>
             </div>
@@ -70,7 +74,7 @@
             <div class="col-lg-3 d-none d-lg-block">
                 <a class="btn d-flex align-items-center justify-content-between bg-primary w-100" data-toggle="collapse"
                     href="#navbar-vertical" style="height: 65px; padding: 0 30px;">
-                    <h6 class="text-dark m-0"><i class="fa fa-bars mr-2"></i>Categories</h6>
+                    <h6 class="text-dark m-0"><i class="fa fa-bars mr-2"></i>@lang('messages.categories')</h6>
                     <i class="fa fa-angle-down text-dark"></i>
                 </a>
                 <nav class="collapse position-absolute navbar navbar-vertical navbar-light align-items-start p-0 bg-light"
@@ -79,8 +83,8 @@
                         @foreach ($categories as $category)
                             @if (!$category->subcategories->isEmpty())
                                 <div class="nav-item dropdown dropright">
-                                    <a href="{{route('shop',['parent'=>$category->slug])}}" class="nav-link dropdown-toggle"
-                                        data-toggle="dropdown">{{ $category->name }} <i
+                                    <a href="{{ route('shop', ['parent' => $category->slug]) }}"
+                                        class="nav-link dropdown-toggle" data-toggle="dropdown">{{ $category->name }} <i
                                             class="fa fa-angle-right float-right mt-1"></i></a>
                                     <div class="dropdown-menu position-absolute rounded-0 border-0 m-0">
                                         @foreach ($category->subcategories as $subcategory)
@@ -103,17 +107,18 @@
                         <span class="h1 text-uppercase text-dark bg-light px-2">Multi</span>
                         <span class="h1 text-uppercase text-light bg-primary px-2 ml-n1">Shop</span>
                     </a>
-                    <button type="button" class="navbar-toggler" data-toggle="collapse"
-                        data-target="#navbarCollapse">
+                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
                             @php
-                                $active ='active';
+                                $active = 'active';
                             @endphp
-                            <a href="{{ route('home') }}" class="nav-item nav-link {{ request()->routeIs('home') ? $active : '' }}">Home</a>
-                            <a href="{{ route('shop') }}" class="nav-item nav-link {{ request()->routeIs('shop') ? $active : '' }}">Shop</a>
+                            <a href="{{ route('home') }} "
+                                class="nav-item nav-link {{ request()->routeIs('home') ? $active : '' }}">@lang('messages.home')</a>
+                            <a href="{{ route('shop') }} "
+                                class="nav-item nav-link {{ request()->routeIs('shop') ? $active : '' }}">@lang('messages.shop')</a>
                             <!--
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages <i
@@ -123,21 +128,23 @@
                                 </div>
                             </div>
                             -->
-                            <a href="{{ route('employee') }}" class="nav-item nav-link {{ request()->routeIs('employee') ? $active : '' }}">Employee</a>
+                            <a href="{{ route('employee') }} "
+                                class="nav-item nav-link {{ request()->routeIs('employee') ? $active : '' }}">@lang('messages.employee')</a>
 
-                            <a href="{{ route('contact') }}" class="nav-item nav-link {{request()->routeIs('contact') ? $active : '' }}">Contact</a>
+                            <a href="{{ route('contact') }} "messages
+                                class="nav-item nav-link {{ request()->routeIs('contact') ? $active : '' }}">@lang('messages.contact')</a>
                         </div>
                         <div class="navbar-nav ml-auto py-0 d-none d-lg-block">
-                            <a href="{{route('favory')}}" class="btn px-0">
+                            <a href="{{ route('favory') }}" class="btn px-0">
                                 <i class="fas fa-heart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle"
-                                    style="padding-bottom: 2px;">{{$favcount}}</span>
+                                    style="padding-bottom: 2px;">{{ $favcount }}</span>
                             </a>
-                            <a href="{{route('cart')}}" class="btn px-0 ml-3">
+                            <a href="{{ route('cart') }}" class="btn px-0 ml-3">
                                 <i class="fas fa-shopping-cart text-primary"></i>
                                 <span class="badge text-secondary border border-secondary rounded-circle"
                                     style="padding-bottom: 2px;">
-                                {{$shops}}
+                                    {{ $shops }}
                                 </span>
                             </a>
 
@@ -151,16 +158,17 @@
                                         data-toggle="dropdown"><i class="fa-solid fa-caret-down"></i></button>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <button class="dropdown-item " type="button"><a class="text-decoration-none"
-                                            href="#">Ayarlar</a>
-                                        <button class="dropdown-item" type="button"><a class="text-decoration-none"
-                                                href="{{ route('userlogout') }}">Çıxış Et</a></button>
+                                                href="#">Ayarlar</a>
+                                            <button class="dropdown-item" type="button"><a
+                                                    class="text-decoration-none"
+                                                    href="{{ route('userlogout') }}">Çıxış Et</a></button>
 
                                     </div>
                                 </div>
                             @else
-                            <a href="{{route('login')}}" class="px-0 ml-3">
-                                <i class="fa-solid fa-right-to-bracket"></i>
-                            </a>
+                                <a href="{{ route('login') }}" class="px-0 ml-3">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                </a>
                             @endif
                         </div>
                     </div>

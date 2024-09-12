@@ -126,5 +126,6 @@ return [
     'middleware' => [
         'isadmin' => \App\Http\Middleware\AdminCheck::class,
         'isnotadmin' => \App\Http\Middleware\NotadminCheck::class,
+        'lang' =>\App\Http\Middleware\LocaleMiddleware::class,
     ],
 ];

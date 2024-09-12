@@ -3,6 +3,7 @@
 use App\Http\Controllers\CartControllers;
 use App\Http\Controllers\FavoryControllers;
 use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\PanelCotrollers;
 use App\Http\Controllers\RatingControllers;
 use Illuminate\Support\Facades\Route;
@@ -77,4 +78,7 @@ Route::get('search',[HomePageController::class,'search'])->name('search');
 Route::post('/comment/newcomment/{product_id}',[HomePageController::class,'comments'])->name('comment');
 Route::get('/comment/{user_id}',[HomePageController::class,'showUserComments'])->name('showcomment');
 
+
+    Route::get('/locale/{locale}',[LocaleController::class,'setLang'])->name('locale');
+//lang
 
