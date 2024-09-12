@@ -220,43 +220,59 @@
                     </div>
                     <div class="tab-pane fade show active" id="tab-pane-1">
                         <div class="row">
-                            <div class="col-md-6">
-                                @forelse($userComment->comments as $comment)
-                                    <h4 class="mb-4">{{ $comment->product->name }} - {{ $comment->created_at->format('d M Y') }}</h4>
-                                    <div class="media mb-4">
-                                        <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
-                                        <div class="media-body">
-                                            <h6>{{ $userComment->name }}<small> - <i>{{ $comment->created_at->format('d M Y') }}</i></small></h6>
-                                            <div class="text-primary mb-2">
-                                                @for ($i = 0; $i < 5; $i++)
-                                                    @if ($i < $comment->rating)
-                                                        <i class="fas fa-star"></i>
-                                                    @else
-                                                        <i class="far fa-star"></i>
-                                                    @endif
+                            @if (!empty($products) && $products->count() > 0)
+                                <div class="col-md-6">
+                                    @php
+                                        $averageRating = number_format($averageRating, 1);
+                                        $fullStars = floor($averageRating);
+                                        $hasHalfStar = $averageRating - $fullStars >= 0.5;
+                                    @endphp
+
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= $fullStars)
+                                            <i class="fas fa-star text-primary"></i>
+                                        @elseif ($i == $fullStars + 1 && $hasHalfStar)
+                                            <i class="fas fa-star-half-alt text-primary"></i>
+                                        @else
+                                            <i class="far fa-star text-primary"></i>
+                                        @endif
+                                    @endfor
+                                    <h4 class="mb-4">{{ $productsCommentsCount }} review for "{{ $products->name }}"
+                                    </h4>
+                                    @foreach ($products->comments as $comment)
+                                        <div class="media mb-4">
+                                            <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1"
+                                                style="width: 45px;">
+                                            <div class="media-body">
+                                                <h6>{{ $comment->name }}<small> -
+                                                        <i>{{ $comment->created_at->format('d-M-Y / H:i') }}</i></small>
+                                                </h6>
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <i
+                                                        class="fas fa-star{{ $i <= $comment->rating ? '' : '-o' }} text-primary"></i>
                                                 @endfor
+
+
+
+
+                                                <p>{{ $comment->message }}</p>
                                             </div>
-                                            <p>{{ $comment->message }}</p>
                                         </div>
-                                    </div>
-                                @empty
-                                    <p>Henüz yorum yapılmamış.</p>
-                                @endforelse
-                            </div>
-
-
-
+                                    @endforeach
+                                </div>
+                            @endif
                             <div class="col-md-6">
                                 <h4 class="mb-4">Leave a review</h4>
                                 <small>Your email address will not be published. Required fields are marked *</small>
-                                <form method="POST" action="{{route('comment',$singleProduct->id)}}">
+                                <form method="POST" action="{{ route('comment', $singleProduct->id) }}">
                                     @csrf
                                     <div class="d-flex my-3">
                                         <p class="mb-0 mr-2">Your Rating * :</p>
                                         <div class="star-rating">
                                             <div class="star-rating">
-                                                @for($i = 5; $i >= 1; $i--)
-                                                    <input type="radio" id="star-{{ $i }}" name="rating" value="{{ $i }}">
+                                                @for ($i = 5; $i >= 1; $i--)
+                                                    <input type="radio" id="star-{{ $i }}" name="rating"
+                                                        value="{{ $i }}">
                                                     <label for="star-{{ $i }}">&#9733;</label>
                                                 @endfor
                                             </div>

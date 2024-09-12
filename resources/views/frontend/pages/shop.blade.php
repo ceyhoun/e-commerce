@@ -169,12 +169,13 @@
                                                 <a class="h6 text-decoration-none text-truncate"
                                                     href="{{ route('detail', $product->slug) }}">{{ $product->name }}</a>
                                                 <div class="d-flex align-items-center justify-content-center mt-2">
-                                                    <h5>{{ $product->price }} AZN(MANAT)</h5>
+                                                    <h5>{{ $product->price }} AZN</h5>
                                                     <h6 class="text-muted ml-2"><del>$6</del></h6>
                                                 </div>
                                                 <div class="d-flex align-items-center justify-content-center mb-1">
-                                                    <small class="fa fa-star mr-1"></small>
+                                                    <small class="fa fa-star mr-1 text-primary" ></small>
                                                     <small>90</small>
+
                                                 </div>
                                             </div>
                                         </div>

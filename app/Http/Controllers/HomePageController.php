@@ -261,10 +261,20 @@ class HomePageController extends Controller
         $data['likeProducts'] = $likeProducts;
 
         //comments and ratin
-        $userId = Auth::id();
-        $userComment = User::with('comments')->find($userId);
 
-        $data['userComment']=$userComment;
+
+
+        $products = Product::with('comments')->where('slug', $slug)->first();
+
+        $productsCommentsCount=$products->comments->count();
+
+        $averageRating = $products->comments()->avg('rating');
+
+
+
+        $data['products'] = $products;
+        $data['productsCommentsCount'] = $productsCommentsCount;
+        $data['averageRating'] = $averageRating;
 
 
 
