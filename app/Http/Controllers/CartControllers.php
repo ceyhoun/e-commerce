@@ -152,4 +152,22 @@ class CartControllers extends Controller
         return redirect()->back()->with('error', 'Sipariş silinirken veya ürün güncellenirken bir hata oluştu.');
     }
 
+    public function getproduct($productId)
+    {
+        $product = Product::find($productId);
+        // ürün bulunamadıysa boş dönder
+        if (!$product) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Ürün bulunamadı!'
+            ], 404);
+        }
+
+        // Ürün bulunduysa JSON formatında ürünü döndür
+        return response()->json([
+            'status' => 'alindi',
+            'data' => $product
+        ], 200);
+    }
+
 }

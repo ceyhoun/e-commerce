@@ -140,17 +140,21 @@
                             <img class="img-fluid w-100" src="{{ url("$product->images") }}" alt="{{ $product->name }}">
                             <div class="product-action">
 
-                                <a href="" class="btn btn-outline-dark btn-square btn-basket"
-                                    data-item-id="{{ $product->id }}">
+                                <a href="javascript:void(0);" tabindex="0" role="button"
+                                    data-cart-id={{ $product->id }} class="btn btn-outline-dark btn-square btn-basket">
                                     <i class="fa fa-shopping-cart"></i>
                                 </a>
+
                                 <a class="btn btn-outline-dark btn-square btn-fav" data-item-id="{{ $product->id }}"><i
                                         class="far fa-heart"></i></a>
-                                        <a class="btn btn-outline-dark btn-square" href="">
-                                            <svg class="icon" xmlns="http://www.w3.org/2000/svg"  width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                                <path d="M10.08,7l1,1,3.44-3.45L11,1,10,2l1.8,1.8H2v1.4h9.82ZM5.86,9l-1-1L1.42,11.5,4.91,15l1-1L4.1,12.2H14V10.8H4.1Z"></path>
-                                            </svg>
-                                        </a>
+                                <a class="btn btn-outline-dark btn-square" href="">
+                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        fill="currentColor" viewBox="0 0 16 16">
+                                        <path
+                                            d="M10.08,7l1,1,3.44-3.45L11,1,10,2l1.8,1.8H2v1.4h9.82ZM5.86,9l-1-1L1.42,11.5,4.91,15l1-1L4.1,12.2H14V10.8H4.1Z">
+                                        </path>
+                                    </svg>
+                                </a>
 
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-search"></i></a>
@@ -164,11 +168,9 @@
                                 <h6 class="text-muted ml-2"><del>123.00 tl</del></h6>
                             </div>
                             <div class="d-flex align-items-center justify-content-center mb-1">
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
-                                <small class="fa fa-star text-primary mr-1"></small>
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <small class="fa fa-star text-primary mr-1"></small>
+                                @endfor
                                 <small>(99)</small>
                             </div>
                         </div>
@@ -218,8 +220,8 @@
                             <div class="product-action">
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-shopping-cart"></i></a>
-                                <a class="btn btn-outline-dark btn-square btn-fav" data-item-id="{{ $product->id }}" href=""><i
-                                        class="far fa-heart"></i></a>
+                                <a class="btn btn-outline-dark btn-square btn-fav" data-item-id="{{ $product->id }}"
+                                    href=""><i class="far fa-heart"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i
                                         class="fa fa-sync-alt"></i></a>
                                 <a class="btn btn-outline-dark btn-square" href=""><i
@@ -298,13 +300,13 @@
                     function showfavdata(itemName) {
                         if (itemName) {
                             Swal.fire({
-                                title:'success',
+                                title: 'success',
                                 text: itemName + ' eklendi.',
                                 icon: 'success',
                             })
                         } else {
                             Swal.fire({
-                                title:'error',
+                                title: 'error',
                                 text: 'favda',
                                 icon: 'error',
                             })
@@ -312,6 +314,37 @@
                     }
 
                 });
+
+                $('.btn-basket').click(function(e) {
+                    e.preventDefault();
+                     let productId = $(this).data('cart-id')
+
+                    $.ajax({
+                        type: "GET",
+                        url: `/cart/getproduct/${productId}`,
+                        data: {
+                            productId: productId
+
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            showCartData(response);
+                            //console.log(response);
+
+                        },
+                        error: function(xhr,status,error)
+                        {
+                            console.log(xhr,status,error);
+
+                        }
+                    });
+
+                    function showCartData(response) {
+                            console.log(response);
+                    }
+
+                });
+
             });
         </script>
     @endpush

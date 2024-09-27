@@ -237,6 +237,7 @@
                                             <i class="far fa-star text-primary"></i>
                                         @endif
                                     @endfor
+
                                     <h4 class="mb-4">{{ $productsCommentsCount }} review for "{{ $products->name }}"
                                     </h4>
                                     @foreach ($products->comments as $comment)
@@ -252,11 +253,19 @@
                                                         class="fas fa-star{{ $i <= $comment->rating ? '' : '-o' }} text-primary"></i>
                                                 @endfor
 
-
-
-
                                                 <p>{{ $comment->message }}</p>
+
                                             </div>
+                                            @if (Auth::check())
+                                                <form action="{{ route('deletecomment', $comment->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        onclick="return confirm(`Silinsin mi ?`)">Sil</button>
+                                                </form>
+                                                <button type="submit" class="btn btn-secondary btn-hidden"
+                                                    data-hidden="{{ $comment->id }}">Gizle</button>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>
@@ -276,6 +285,7 @@
                                                     <label for="star-{{ $i }}">&#9733;</label>
                                                 @endfor
                                             </div>
+
 
                                         </div>
 
@@ -372,5 +382,6 @@
                 }
             });
         });
+
     </script>
 @endpush

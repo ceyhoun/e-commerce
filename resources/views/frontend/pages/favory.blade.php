@@ -34,8 +34,7 @@
                                     </form>
                                     </td>
                                     <td>
-                                        <form action="" method="POST"
-                                            action="">
+                                        <form action="{{ route('deletefavory', ['id' => $favory->id, 'product_id' => $favory->product_id]) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger"

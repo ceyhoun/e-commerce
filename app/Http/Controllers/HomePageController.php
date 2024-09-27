@@ -615,12 +615,12 @@ class HomePageController extends Controller
             $searchResult = $request->search;
 
             if (empty($searchResult)) {
-                $data['message'] = 'Arama için değer girmediniz';
+                $data['message'] = 'You entered a value for the search';
             } else {
                 $products = Product::where('name', 'like', "%{$searchResult}%")->get();
 
                 if ($products->isEmpty()) {
-                    $data['message'] = 'Bele bir Mehsul yoxdur';
+                    $data['message'] = 'There is no such product ';
                 } else {
                     $data['products'] = $products;
                 }
@@ -639,7 +639,7 @@ class HomePageController extends Controller
         $product = Product::find($product_id);
 
         $user_id = Auth::id();
-        $session_id = $request->session()->getId();
+        $session_id = $request->session()->get('_token');
         $message = $request->input('message');
         $name = $request->input('name');
         $email = $request->input('email');
@@ -684,6 +684,8 @@ class HomePageController extends Controller
 
 
     }
+
+
 
 
 

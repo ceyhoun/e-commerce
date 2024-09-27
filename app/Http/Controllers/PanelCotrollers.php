@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\DiscountPercent;
 use App\Models\Employee;
 use App\Models\Product;
 use App\Models\Referance;
@@ -382,4 +383,33 @@ class PanelCotrollers extends Controller
         }
         return redirect()->back()->with('error', 'Xeta...');
     }
+
+
+
+    public function discountpercent()
+    {
+        $categories =Category::all();
+        $data['categories']=$categories;
+        return view('backend.section.forms.adddiscountpercent',$data);
+    }
+
+    public function adddiscountpercent(Request $request)
+    {
+        $discount_name =$request->input('discountname');
+        $discount_percent =$request->input('discountpercent');
+        $discount_status = $request->has('status')=='on' ? 1 : 0;
+
+        $add_discount_percent =DiscountPercent::create([
+            'name' =>$discount_name,
+            'percent' =>$discount_percent,
+            'is_active' =>$discount_status,
+            'created_at'=>now(),
+            'updated_at'=>now(),
+        ]);
+
+        if ($add_discount_percent) {
+            return redirect()->back()->with('success',$discount_name. " ".'adlı endirim kampaniyası əlavə olundu');
+        }
+    }
+
 }

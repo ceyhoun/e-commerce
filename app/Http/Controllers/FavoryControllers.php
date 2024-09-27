@@ -51,6 +51,24 @@ class FavoryControllers extends Controller
         }
     }
 
+    public function deleteFavory(Request $request, $id, $product_id)
+    {
+        $favory = Favory::with([
+            'products' => function ($q) {
+                $q->select('id', 'name');
+            }
+        ])
+        ->where('id',$id)
+        ->where('product_id',$product_id)
+        ->first();
+
+        if ($favory) {
+            $favory->delete();
+        }
+
+
+        return redirect()->back();
+    }
 
 }
 

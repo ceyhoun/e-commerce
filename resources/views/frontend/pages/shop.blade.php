@@ -155,7 +155,7 @@
                                                     alt="">
                                                 <div class="product-action">
                                                     <a class="btn btn-outline-dark btn-square"
-                                                        href="{{ route('additemget', $product->id) }}"><i
+                                                        href="{{ route('getproduct', $product->id) }}"><i
                                                             class="fa fa-shopping-cart"></i></a>
                                                     <a class="btn btn-outline-dark btn-square" href=""><i
                                                             class="far fa-heart"></i></a>
