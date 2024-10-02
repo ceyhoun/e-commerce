@@ -412,4 +412,18 @@ class PanelCotrollers extends Controller
         }
     }
 
+    public function productdiscount()
+    {
+         $salecampaigns = DiscountPercent::where('is_active',1)->get();
+         $data['salecampaigns']=$salecampaigns;
+         $categories =Category::all();
+        $data['categories']=$categories;
+        return view('backend.section.forms.addproductdiscount',$data);
+    }
+
+    public function addproductdiscount()
+    {
+        return 'Ok';
+    }
+
 }

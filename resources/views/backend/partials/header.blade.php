@@ -282,6 +282,12 @@
                       <p>Endirim %'i elavə edin</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="{{route('productdiscount')}}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Məhsula Endirim əlavəsi</p>
+                    </a>
+                  </li>
             </ul>
           </li>
           <li class="nav-item">

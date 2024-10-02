@@ -126,7 +126,7 @@ class HomePageController extends Controller
         $categories = Category::where('status', '1')->with('subcategories')->get();
         $referances = Referance::where('status', 1)->get();
         $data['referances'] = $referances;
-        $subcategories = Subcategory::where('status', '1')->get();
+         $subcategories = Subcategory::where('status', '1')->get();
         $data['subcategories'] = $subcategories;
         $favcount = Favory::count();
         $data['favcount'] = $favcount;

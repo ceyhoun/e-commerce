@@ -30,7 +30,7 @@
             <div class="col-lg-4 col-6 text-left">
                 <form action="{{ route('search') }}" method="GET">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="search" placeholder="Search for products">
+                        <input type="text" class="form-control" name="search" placeholder="@lang('messages.Search for products')">
                         <div class="input-group-append">
                             <button class="input-group-text bg-transparent text-primary" type="submit">
                                 <i class="fa fa-search"></i>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="btn-group">
                     <button type="button" class="btn btn-sm btn-light dropdown-toggle"
-                        data-toggle="dropdown">Language</button>
+                        data-toggle="dropdown">@lang('messages.Language')</button>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a href="locale/en" class="dropdown-item">EN</a>
                         <a href="locale/fr" class="dropdown-item">FR</a>
@@ -161,7 +161,7 @@
                                                 href="#">Ayarlar</a>
                                             <button class="dropdown-item" type="button"><a
                                                     class="text-decoration-none"
-                                                    href="{{ route('userlogout') }}">Çıxış Et</a></button>
+                                                    href="{{ route('userlogout') }}">@lang('messages.Çıxış Et')</a></button>
 
                                     </div>
                                 </div>

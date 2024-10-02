@@ -32,6 +32,10 @@ Route::group(['prefix' => 'admin'], function () {
         Route::get('/mailbox', [PanelCotrollers::class, 'mailbox'])->name('mailbox');
         Route::get('/product/discount/percent',[PanelCotrollers::class,'discountpercent'])->name('discountpercent');
         Route::post('/product/discount/add/percent',[PanelCotrollers::class,'adddiscountpercent'])->name('adddiscountpercent');
+        Route::get('/product/discount/product/percent',[PanelCotrollers::class,'productdiscount'])->name('productdiscount');
+        Route::post('/product/discount/add/product/percent',[PanelCotrollers::class,'addproductdiscount'])->name('addproductdiscount');
+
+
 
         Route::group(['prefix' => 'forms'], function () {
             Route::group(['prefix' => 'category'], function () {
@@ -47,6 +51,7 @@ Route::group(['prefix' => 'admin'], function () {
                 Route::post('referances', [PanelCotrollers::class, 'addreferances'])->name('addreferances');
 
             });
+            Route::post('addproducts',[PanelCotrollers::class,'addproducts'])->name('addproducts');
             Route::get('products', [PanelCotrollers::class, 'products'])->name('products');
             //referances
             Route::get('referances', [PanelCotrollers::class, 'referances'])->name('referances');
